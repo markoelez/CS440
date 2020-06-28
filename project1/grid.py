@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import random
+import pickle
 from cell import Cell, CellState
 
 class Grid:
@@ -79,7 +80,6 @@ class Grid:
                 return False
         return True
 
-
     def dfs(self, start, visited):
         stack = []
         stack.append(start)
@@ -104,10 +104,27 @@ class Grid:
 
             visited[neighbor.x][neighbor.y] = 1
 
+    def serialize(self, filename):
+        with open(filename, 'wb') as output:
+            pickle.dump(self, output)
+
+def load_grid(filename):
+    with open(filename, 'rb') as _input:
+        return pickle.load(_input)
+
+
 if __name__ == '__main__':
 
     maze = Grid(50, 30)
 
-    print(maze)
+    #print(maze)
 
-    print('=' * 100)
+    #print('=' * 100)
+
+    maze.serialize('test2.txt')
+
+    test = load_grid('test2.txt')
+
+    print(test)
+
+

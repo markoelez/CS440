@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from constants import GRID_WORLD_DIMENS, NUM_GRID_WORLDS
-from grid import Grid
+from grid import Grid, load_grid
 
 class World:
 
@@ -31,6 +31,14 @@ class World:
             print('=' * 70)
             print()
 
+    def save(self, base_dir='data'):
+        for i, grid in enumerate(self.grids):
+            grid.serialize('{}/grid{}.txt'.format(base_dir, i))
+
+    def load(self, base_dir):
+        for i in range(self.size):
+            self.grids.append(load_grid('{}/grid{}.txt'.format(base_dir, i)))
+
 
 if __name__ == '__main__':
 
@@ -41,4 +49,10 @@ if __name__ == '__main__':
 
     world.gen_grids()
 
-    world.print_all()
+    world.save('data')
+
+    test = World(size=2, dimens=dimens)
+
+    test.load('data')
+
+    test.print_all()
