@@ -21,9 +21,7 @@ class World:
 
     def gen_grid(self):
         """Generates a single grid."""
-        g = Grid(self.w, self.h)
-        g.gen_maze()
-        return g
+        return Grid(self.w, self.h)
 
     def print_all(self):
         """Print all grids in world."""
@@ -37,9 +35,9 @@ class World:
 if __name__ == '__main__':
 
     #dimens = GRID_WORLD_DIMENS
-    dimens = (8, 5)
+    dimens = (30, 30)
 
-    world = World(dimens=dimens)
+    world = World(size=2, dimens=dimens)
 
     world.gen_grids()
 
