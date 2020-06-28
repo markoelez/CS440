@@ -121,9 +121,9 @@ if __name__ == '__main__':
 
     #print('=' * 100)
 
-    maze.serialize('test2.txt')
+    maze.serialize('test2.pickle')
 
-    test = load_grid('test2.txt')
+    test = load_grid('test2.pickle')
 
     print(test)
 
