@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 
 import random
+from cell import Cell, CellState
 
 class Grid:
     """Represents a maze of Cells."""
-    def __init__(self, w, h):
+    def __init__(self, width, height):
+        random.seed()
         """Initialized with number of cells in each dimension"""
-        self.w, self.h = w, h
+        self.w, self.h = width, height
         # internal grid representation
         self.maze = [[Cell(x, y) for y in range(self.h)] for x in range(self.w)]
+        # generate maze
+        self.gen_maze()
 
     def get_cell(self, x, y):
         """Get Cell at position."""
@@ -16,92 +20,94 @@ class Grid:
 
     def __str__(self):
         """Simple representation for printing."""
-        rows = ['-' * self.w * 2]
+        rows = []
         for y in range(self.h):
-            row = ['|']
+            row = []
             for x in range(self.w):
-                if self.maze[x][y].walls['E']:
-                    row.append(' |')
-                else:
-                    row.append('  ')
+                row.append(str(self.cell_at(x, y)))
             rows.append(''.join(row))
-            row = ['|']
-            for x in range(self.w):
-                if self.maze[x][y].walls['S']:
-                    row.append('-+')
-                else:
-                    row.append(' +')
-            rows.append(''.join(row))
+
         return '\n'.join(rows)
 
-    def get_neighbors(self, cell):
-        dirs = [('W', (-1, 0)),
-                ('E', (1, 0)),
-                ('S', (0, 1)),
-                ('N', (0, -1))]
+    def cell_at(self, x, y):
+        return self.maze[x][y]
 
-        neighbors = []
-        for d, (dx, dy) in dirs:
-            # Get new pos 
+    def get_valid_neighbors(self, cell, visited):
+        """Returns list of unvisited neighbors"""
+        dirs = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+        res = []
+        for (dx, dy) in dirs:
             x2, y2 = cell.x + dx, cell.y + dy
-            # Check bounds
             if (0 <= x2 < self.w) and (0 <= y2 < self.h):
-                n = self.get_cell(x2, y2)
-                if n.walled_off():
-                    neighbors.append((d, n))
-        return neighbors
+                if not visited[x2][y2]:
+                    n = self.cell_at(x2, y2)
+                    res.append(n)
+        return res
 
     def gen_maze(self):
-        n = self.w * self.h
+        visited = [[0 for y in range(self.h)] for x in range(self.w)]
+
+        while not self.is_done(visited):
+            # Choose random starting cell, mark as free space
+            start = self.cell_at(random.randint(0, self.w - 1), random.randint(0, self.h - 1))
+            start.set_state(CellState.FREE)
+
+            self.dfs(start, visited)
+
+        # Create borders
+        for i in range(self.w):
+            self.cell_at(i, 0).set_state(CellState.WALL)
+            self.cell_at(i, self.h - 1).set_state(CellState.WALL)
+        for i in range(self.h):
+            self.cell_at(0, i).set_state(CellState.WALL)
+            self.cell_at(self.w - 1, i).set_state(CellState.WALL)
+
+        # Choose random start and end
+        start = self.cell_at(random.randint(1, self.w - 2), random.randint(1, self.h - 2))
+        start.set_state(CellState.START)
+
+        end = self.cell_at(random.randint(1, self.w - 2), random.randint(1, self.h - 2))
+
+        # Ensure we never have the same start and end cells
+        while start == end:
+            end = self.cell_at(random.randint(1, self.w - 2), random.randint(1, self.h - 2))
+        end.set_state(CellState.END)
+
+    def is_done(self, visited):
+        for row in visited:
+            if 0 in row:
+                return False
+        return True
+
+
+    def dfs(self, start, visited):
         stack = []
-        curr = self.get_cell(0, 0)
+        stack.append(start)
 
-        n_vis = 1
+        while stack:
+            n = stack.pop()
+            neighbors = self.get_valid_neighbors(n, visited)
 
-        while n_vis < n:
-            neighbors = self.get_neighbors(curr)
-
+            # Check for dead end
             if not neighbors:
-                curr = stack.pop()
-                continue
+                return
 
-            d, next_cell = random.choice(neighbors)
-            curr.remove_wall(next_cell, d)
-            stack.append(curr)
-            curr = next_cell
-            n_vis += 1
+            neighbor = random.choice(neighbors)
 
+            if random.randint(0, 100) < 30:
+                # Mark as blocked
+                neighbor.set_state(CellState.WALL)
+            else:
+                # Mark as unblocked and add to stack
+                neighbor.set_state(CellState.FREE)
+                stack.append(neighbor)
 
-class Cell:
-    """Represents a single cell in the grid."""
-
-    # Walls separate cells from N-S and E-W
-    wall_pairs = {'N': 'S', 'S': 'N', 'E': 'W', 'W': 'E'}
-
-    def __init__(self, x, y):
-        """Initialize Cell with given position and surrounded by walls."""
-        self.x, self.y = x, y
-        self.walls = {'N': True, 'S': True, 'E': True, 'W': True}
-
-    def walled_off(self):
-        """Check if walls in all directions"""
-        return all(self.walls.values())
-
-    def remove_wall(self, target, wall):
-        # remove wall in origin
-        self.walls[wall] = False
-        # remove wall in target
-        target.walls[self.wall_pairs[wall]] = False
-
+            visited[neighbor.x][neighbor.y] = 1
 
 if __name__ == '__main__':
 
-    maze = Grid(10, 5)
+    maze = Grid(50, 30)
 
     print(maze)
 
-    print('=' * 20)
-    maze.gen_maze()
-
-    print('=' * 20)
-    print(maze)
+    print('=' * 100)
