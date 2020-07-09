@@ -15,6 +15,12 @@ class Grid:
         # generate maze
         self.gen_maze()
 
+    def get_rows(self):
+        return self.w
+
+    def get_cols(self):
+        return self.h
+
     def get_cell(self, x, y):
         """Get Cell at position."""
         return self.maze[x][y]
@@ -33,8 +39,20 @@ class Grid:
     def cell_at(self, x, y):
         return self.maze[x][y]
 
+    def get_neighbors(self, cell):
+        """Returns list of neighbors for a given cell"""
+        dirs = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+        res = []
+        for (dx, dy) in dirs:
+            x2, y2 = cell.x + dx, cell.y + dy
+            if (0 <= x2 < self.w) and (0 <= y2 < self.h):
+                n = self.cell_at(x2, y2)
+                res.append(n)
+        return res
+
+
     def get_valid_neighbors(self, cell, visited):
-        """Returns list of unvisited neighbors"""
+        """Returns list of unvisited neighbors for use in maze generation"""
         dirs = [(0, 1), (1, 0), (-1, 0), (0, -1)]
         res = []
         for (dx, dy) in dirs:
@@ -54,7 +72,7 @@ class Grid:
             start.set_state(CellState.FREE)
 
             self.dfs(start, visited)
-
+        """ 
         # Create borders
         for i in range(self.w):
             self.cell_at(i, 0).set_state(CellState.WALL)
@@ -62,6 +80,7 @@ class Grid:
         for i in range(self.h):
             self.cell_at(0, i).set_state(CellState.WALL)
             self.cell_at(self.w - 1, i).set_state(CellState.WALL)
+        """ 
 
         # Choose random start and end
         start = self.cell_at(random.randint(1, self.w - 2), random.randint(1, self.h - 2))
@@ -73,6 +92,9 @@ class Grid:
         while start == end:
             end = self.cell_at(random.randint(1, self.w - 2), random.randint(1, self.h - 2))
         end.set_state(CellState.END)
+
+        self.start = start
+        self.end = end
 
     def is_done(self, visited):
         for row in visited:
@@ -107,6 +129,7 @@ class Grid:
     def serialize(self, filename):
         with open(filename, 'wb') as output:
             pickle.dump(self, output)
+
 
 def load_grid(filename):
     with open(filename, 'rb') as _input:
