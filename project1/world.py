@@ -12,10 +12,11 @@ class World:
 
         self.grids = []
 
+        self.gen_grids()
+
     def gen_grids(self):
-        """
-        Generate all maze-like grids in world.
-        """
+        """Generate all maze-like grids in world."""
+        
         for _ in range(self.size):
             self.grids.append(self.gen_grid())
 
@@ -39,6 +40,9 @@ class World:
         for i in range(self.size):
             self.grids.append(load_grid('{}/grid{}.pickle'.format(base_dir, i)))
 
+    def __getitem__(self, idx):
+        return self.grids[idx]
+
 
 if __name__ == '__main__':
 
@@ -46,8 +50,6 @@ if __name__ == '__main__':
     dimens = (30, 30)
 
     world = World(size=2, dimens=dimens)
-
-    world.gen_grids()
 
     world.save('data')
 

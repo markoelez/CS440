@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import DOUBLEBUF
 from cell import Cell, CellState
 from grid import Grid, load_grid
+from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE
 
 
 WIDTH = 10
@@ -12,12 +13,6 @@ HEIGHT = 10
 # Gap between cells in grid
 GAP = 1
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
-BLUE = (135,206,235)
 
 class Display:
 
@@ -35,27 +30,55 @@ class Display:
         pygame.display.set_caption("Grid Display")
 
         self.draw_grid()
-    
+
     def update(self):
         for _ in pygame.event.get():
             pass
 
         pygame.display.flip()
 
+    '''    
+    def listen(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    # Regular A* search
+                    astar = AStar(self, self, self._grid.get_start(), self.grid.get_goal())
+                    astar.exec_forwards()
+                    pygame.display.flip()
+        pygame.display.flip()
+    '''
+    def draw_rect_at_pos(self, r, c, color):
+        """Draw a rect of given color at (row, col)"""
+        x1 = ((GAP + WIDTH) * c + GAP)
+        y1 = ((GAP + HEIGHT) * r + GAP)
+        pygame.draw.rect(self.screen, color, (x1, y1, WIDTH, HEIGHT))
+
     def draw_grid(self):
         for row in range(self.rows):
             for col in range(self.cols):
                 color = WHITE
                 if self._grid.cell_at(row, col).is_state(CellState.WALL):
-                    color = BLUE 
+                    color = BLACK 
                 elif self._grid.cell_at(row, col).is_state(CellState.END):
-                    color = GREEN 
-                elif self._grid.cell_at(row, col).is_state(CellState.START):
                     color = RED 
+                elif self._grid.cell_at(row, col).is_state(CellState.START):
+                    color = GREEN 
 
-                pygame.draw.rect(self.screen, color,[(GAP+ WIDTH) * col + GAP, (GAP+ HEIGHT) * row + GAP, WIDTH, HEIGHT])
+                self.draw_rect_at_pos(row, col, color)
 
         pygame.display.flip()
+
+    def get_grid(self):
+        return self.grid
+
+    def get_screen(self):
+        return self.screen
+
+    def get_rows(self):
+        return self.rows
 
 
 if __name__ == '__main__':

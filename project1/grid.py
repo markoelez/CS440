@@ -21,6 +21,9 @@ class Grid:
     def get_cols(self):
         return self.h
 
+    def get_dimens(self):
+        return (self.get_rows(), self.get_cols())
+
     def get_cell(self, x, y):
         """Get Cell at position."""
         return self.maze[x][y]
@@ -37,6 +40,8 @@ class Grid:
         return '\n'.join(rows)
 
     def cell_at(self, x, y):
+        if x < 0 or x >= self.w or y < 0 or y >= self.h:
+            raise IndexError
         return self.maze[x][y]
 
     def get_neighbors(self, cell):
@@ -94,7 +99,7 @@ class Grid:
         end.set_state(CellState.END)
 
         self.start = start
-        self.end = end
+        self.goal = end 
 
     def is_done(self, visited):
         for row in visited:
@@ -130,6 +135,11 @@ class Grid:
         with open(filename, 'wb') as output:
             pickle.dump(self, output)
 
+    def get_start(self):
+        return self.start
+
+    def get_goal(self):
+        return self.goal
 
 def load_grid(filename):
     with open(filename, 'rb') as _input:
