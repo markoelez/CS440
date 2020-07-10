@@ -1,17 +1,22 @@
-import collections
+import heapq 
 
 
 class MinHeap:
     """Defines a binary heap"""
 
     def __init__(self):
-        self.elements = collections.deque()
+        self.array = []
     
     def is_empty(self):
-        return len(self.elements) == 0
+        return len(self.array) == 0
     
-    def put(self, x):
-        self.elements.append(x)
+    def push(self, x):
+        """Push element onto queue"""
+        heapq.heappush(self.array, x)
     
-    def get(self):
-        return self.elements.popleft()
+    def pop(self):
+        """Pop smallest element off queue"""
+        return heapq.heappop(self.array)
+
+    def __getitem__(self, idx):
+        return self.array[idx]

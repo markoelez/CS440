@@ -71,6 +71,12 @@ class Display:
 
         pygame.display.flip()
 
+    def reset_grid(self):
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if self._grid.cell_at(row, col).is_state(CellState.FREE):
+                    self.draw_rect_at_pos(row, col, WHITE)
+
     def get_grid(self):
         return self._grid
 

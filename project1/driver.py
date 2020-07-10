@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+import sys
 from display import Display
-from astar import AStar
+from astar import AStar, AStarVariants
 from grid import Grid, load_grid
 from cell import Cell, CellState
 from world import World
@@ -40,18 +41,34 @@ start, goal = grid.get_start(), grid.get_goal()
 display = Display(grid)
 
 # Start main loop
-print("Press 1 to run A* search from starting cell (green) to goal cell (red)...\n")
+print("Instructions: \n")
+print("Press 0 to reset the grid to its default state\n")
+print("Press 1 to run repeated forward A* search from starting cell (green) to goal cell (red)\n")
+print("Press 2 to run repeated backward A* search from goal cell (red) to start cell (green)\n")
+print("Press 4 quit the program\n")
+print("Listening for input...")
 done = False
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_1:
-                astar = AStar(display, start, goal)
-                astar.do_forwards()
+            if event.key == pygame.K_0:
+                print('Resetting grid...\n')
+                display.reset_grid()
                 pygame.display.flip()
-                print('Running A* Search')
-
+            elif event.key == pygame.K_1:
+                print('Running forwards A* Search\n')
+                astar = AStar(display, start, goal)
+                astar.search(variant=AStarVariants.FORWARDS)
+                pygame.display.flip()
+            elif event.key == pygame.K_2:
+                print('Running backwards A* Search\n')
+                astar = AStar(display, start, goal)
+                astar.search(variant=AStarVariants.BACKWARDS)
+                pygame.display.flip()
+            elif event.key == pygame.K_4:
+                print('Quitting...\n')
+                sys.exit(0)
     pygame.display.flip()
 
