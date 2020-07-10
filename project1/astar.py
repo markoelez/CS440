@@ -5,7 +5,7 @@ from cell import Cell, CellState
 from grid import Grid, load_grid
 from heapq import *
 
-from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE
+from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE, EXPLORE_COLOR
 
 
 class AStar:
@@ -13,7 +13,7 @@ class AStar:
     def __init__(self, viewer, start, goal):
 
         self.viewer = viewer
-        self.grid = grid
+        self.grid = viewer.get_grid() 
         self.grid_size = self.grid.get_rows()
 
 
@@ -44,10 +44,8 @@ class AStar:
         heappush(open_set, (fscore[self.start], self.start))
 
         while open_set:
-            print(open_set)
             # Pop cell of queue
             current = heappop(open_set)[1]
-            print(current)
             
             # If we have reached the goal, backtrack and show path
             if current == self.goal:
@@ -70,31 +68,23 @@ class AStar:
                     neighbor = self.grid.cell_at(current.get_x() + dx, current.get_y() + dy)
                 except:
                     continue
-                print("neighbor: ", neighbor)
             
                 tentative_g_score = gscore[current] + self.heuristic(current, neighbor)
 
                 # Get heuristic
                 self.h = self.heuristic(current, self.goal)
-                print(self.h)
 
                 # Check bounds
                 if not (0 <= neighbor.get_x() < self.grid_size) or not (0 <= neighbor.get_y() < self.grid_size):
                     print('out of bounds', self.grid_size, neighbor.get_x(), neighbor.get_y())
                     continue
 
-                print('breakpoint')
-
                 # Check if cell is blocked off 
                 if self.grid.cell_at(neighbor.get_x(), neighbor.get_y()).is_state(CellState.WALL):
                     continue
 
-                print('breakpoint')
-
                 if neighbor in close_set and tentative_g_score >= gscore.get(neighbor, 0):
                     continue
-
-                print('breakpoint')
 
                 if tentative_g_score < gscore.get(neighbor, 0) or neighbor not in [i[1] for i in open_set]:
 
@@ -104,7 +94,7 @@ class AStar:
                     gscore[neighbor] = tentative_g_score
                     fscore[neighbor] = tentative_g_score + self.heuristic(neighbor, self.goal)
 
-                    self.viewer.draw_rect_at_pos(neighbor.get_x(), neighbor.get_y(), BLUE)
+                    self.viewer.draw_rect_at_pos(neighbor.get_x(), neighbor.get_y(), EXPLORE_COLOR)
 
                     self.viewer.update()
                     heappush(open_set, (fscore[neighbor], neighbor))

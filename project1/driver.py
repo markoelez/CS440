@@ -5,14 +5,15 @@ from astar import AStar
 from grid import Grid, load_grid
 from cell import Cell, CellState
 from world import World
+import pygame
 
 
-NUM_GRID_WORLDS = 50
+NUM_GRID_WORLDS = 10#50
 
 #GRID_WORLD_SIZE_W = 101
 #GRID_WORLD_SIZE_H = 101
-GRID_WORLD_SIZE_W = 80
-GRID_WORLD_SIZE_H = 80 
+GRID_WORLD_SIZE_W = 90
+GRID_WORLD_SIZE_H = 90 
 
 GRID_WORLD_DIMENS = (GRID_WORLD_SIZE_W, GRID_WORLD_SIZE_H)
 
@@ -42,5 +43,15 @@ display = Display(grid)
 print("Press 1 to run A* search from starting cell (green) to goal cell (red)...\n")
 done = False
 while not done:
-    done = display.listen()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                astar = AStar(display, start, goal)
+                astar.do_forwards()
+                pygame.display.flip()
+                print('Running A* Search')
+
+    pygame.display.flip()
 

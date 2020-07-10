@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import DOUBLEBUF
 from cell import Cell, CellState
 from grid import Grid, load_grid
-from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE
+from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE, EXPLORE_COLOR
 
 
 WIDTH = 10
@@ -72,7 +72,7 @@ class Display:
         pygame.display.flip()
 
     def get_grid(self):
-        return self.grid
+        return self._grid
 
     def get_screen(self):
         return self.screen

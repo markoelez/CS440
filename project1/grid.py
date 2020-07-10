@@ -121,7 +121,7 @@ class Grid:
 
             neighbor = random.choice(neighbors)
 
-            if random.randint(0, 100) < 30:
+            if random.randint(0, 100) < 40:
                 # Mark as blocked
                 neighbor.set_state(CellState.WALL)
             else:
