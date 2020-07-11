@@ -66,6 +66,9 @@ class AStar:
             self.gscore[self.goal] = float("inf")
             self._search[self.goal] = self.counter
 
+            self.open = MinHeap()
+            self.closed = set() 
+
             self.open.push((self.gscore[self.start] + self.h(self.start), self.start))
 
             self.compute_path()
@@ -73,7 +76,8 @@ class AStar:
             if not self.open:
                 print("\nCan't find a path!\n")
                 return  
-
+            
+            print('='*20)
             # Follow path until we reach goal or action cost increases
             curr = self.goal
             while curr != self.start:
@@ -85,10 +89,11 @@ class AStar:
         print("\nFound path\n")
 
     def compute_path(self):
-        while self.open and self.gscore[self.goal] > min(self.gscore[self.start], self.h(self.start)):
+        #while self.gscore[self.goal] > min(self.gscore[self.start], self.h(self.start)):
+        while self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
             s = self.open.pop()[1]
-            print(s)
+            print("CURRENT: {}\n".format(s))
             self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
             pygame.display.flip()
             # Expand cell
@@ -111,9 +116,8 @@ class AStar:
                     self.gscore[succ] = self.gscore[s] + 1
                     # Trace
                     self.tree[succ] = s
-                    #print("SUCC: {}, SELF.OPEN: {}\n".format(succ, self.open))
+                    # Remove from open list 
                     if succ in [x[1] for x in self.open]:
-                        print("SUCC: ", succ)
                         idx = [x[1] for x in self.open].index(succ)
                         self.open.pop_at(idx)
                     

@@ -18,6 +18,9 @@ class MinHeap:
         """Pop smallest element off queue"""
         return heapq.heappop(self.array)
 
+    def peek(self):
+        return self.array[0]
+
     def pop_at(self, i):
         self.array.pop(i)
         heapq.heapify(self.array)
