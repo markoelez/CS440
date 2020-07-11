@@ -40,7 +40,6 @@ class Cell:
         return hash(str(self.x) + str(self.y) + str(self.x - self.y))
 
     def __eq__(self, other):
-        print(other, type(other))
         return self.get_x() == other.get_x() and self.get_y() == other.get_y()
 
     def is_state(self, other_state):

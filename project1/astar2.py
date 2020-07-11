@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import pygame
 from display import Display
 from cell import Cell, CellState
@@ -77,14 +78,15 @@ class AStar:
                 print("\nCan't find a path!\n")
                 return  
             
-            print('='*20)
             # Follow path until we reach goal or action cost increases
             curr = self.goal
+            path = []
             while curr != self.start:
+                path.append(curr)
                 curr = self.tree[curr]
             
-            # Set start to curr
-            self.start = curr
+            # Move start up path
+            self.start = path[::-1][-1]
 
         print("\nFound path\n")
 
@@ -93,7 +95,7 @@ class AStar:
         while self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
             s = self.open.pop()[1]
-            print("CURRENT: {}\n".format(s))
+            #print("CURRENT: {}\n".format(s))
             self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
             pygame.display.flip()
             # Expand cell
