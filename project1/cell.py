@@ -28,19 +28,20 @@ class Cell:
         return self.y
 
     def get_pos(self):
-        return (self.x, self.y)
+        return (self.get_x(), self.get_y())
     
     def set_state(self, new_state):
         self.state = new_state
 
     def __str__(self):
-        return "({}, {}) -- {}".format(self.x, self.y, self.state.value)
+        return "Cell: ({}, {}) Type: {}".format(self.x, self.y, self.state.value)
     
     def __hash__(self):
         return hash(str(self.x) + str(self.y) + str(self.x - self.y))
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        print(other, type(other))
+        return self.get_x() == other.get_x() and self.get_y() == other.get_y()
 
     def is_state(self, other_state):
         return self.state == other_state

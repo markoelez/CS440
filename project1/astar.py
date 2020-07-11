@@ -45,6 +45,8 @@ class AStar:
 
         gscore = {self.start: 0}
         fscore = {self.start: self.heuristic(self.start, self.goal)}
+
+        # Sort PQ based on f(x) value
         open_set.push((fscore[self.start], self.start))
 
         while open_set:
@@ -63,8 +65,7 @@ class AStar:
                     if current != self.start and current != self.goal:
                         self.viewer.draw_rect_at_pos(current.get_x(), current.get_y(), YELLOW)
 
-                    self.viewer.update()
-                    path.append(current)
+                    self.viewer.update() path.append(current)
 
                     current = trace[current]
 
@@ -78,10 +79,11 @@ class AStar:
                     neighbor = self.grid.cell_at(current.get_x() + dx, current.get_y() + dy)
                 except:
                     continue
-            
+                
+                # Get g(n) -- distance from start node to n
                 g = gscore[current] + self.heuristic(current, neighbor)
 
-                # Get heuristic
+                # Get h(n) -- cost from n to goal
                 self.h = self.heuristic(current, self.goal)
 
                 # Check bounds
@@ -92,15 +94,17 @@ class AStar:
                 if self.grid.cell_at(neighbor.get_x(), neighbor.get_y()).is_state(CellState.WALL):
                     continue
 
-
+                # Check if visited
                 if neighbor in close_set and g >= gscore.get(neighbor, 0):
                     continue
                 
                 if g < gscore.get(neighbor, 0) or neighbor not in [i[1] for i in open_set]:
-
-                    self.g.add(g)
-
+                    # Update trace
                     trace[neighbor] = current
+
+                    # Update g value
+                    #self.g.add(g)
+
                     gscore[neighbor] = g 
                     fscore[neighbor] = g + self.heuristic(neighbor, self.goal)
 
