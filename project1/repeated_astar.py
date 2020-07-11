@@ -16,7 +16,7 @@ class AStarVariants(Enum):
     BACKWARDS = 'backwards'
 
 
-class AStar:
+class RepeatedAStar:
 
     def __init__(self, viewer, start, goal):
 
