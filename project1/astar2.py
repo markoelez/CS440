@@ -60,6 +60,7 @@ class AStar:
         return self.heuristic(start, self.goal)
 
     def search(self, variant=AStarVariants.FORWARDS):
+        path = []
         while self.start != self.goal:
             self.counter += 1
             self.gscore[self.start] = 0
@@ -87,17 +88,24 @@ class AStar:
             
             # Move start up path
             self.start = path[::-1][-1]
-
+        
+        self.backtrack(path)
         print("\nFound path\n")
+
+    def backtrack(self, path):
+        path = path[::-1]
+        for n in path[:-1]:
+            self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
+            pygame.display.flip()
 
     def compute_path(self):
         #while self.gscore[self.goal] > min(self.gscore[self.start], self.h(self.start)):
         while self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
             s = self.open.pop()[1]
-            #print("CURRENT: {}\n".format(s))
-            self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
-            pygame.display.flip()
+            if s != self.start and s != self.goal:
+                self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
+                pygame.display.flip()
             # Expand cell
             self.closed.add(s)
             # Take all actions a in A(s)
