@@ -15,6 +15,10 @@ class AStarVariants(Enum):
     FORWARDS = 'forwards'
     BACKWARDS = 'backwards'
 
+class TieBreakVariants(Enum):
+    LO_G = 'lowg'
+    HI_G = 'hig'
+
 
 class RepeatedAStar:
 
@@ -51,6 +55,8 @@ class RepeatedAStar:
                 self._search[self.grid.cell_at(r, c)] = 0
         self.counter = 0
 
+        self.tiebreak = TieBreakVariants.HI_G
+
     def heuristic(self, a, b):
         (x1, x2), (y1, y2) = a.get_pos(), b.get_pos()
         return abs(x1 - x2) + abs(y1 - y2)
@@ -59,7 +65,10 @@ class RepeatedAStar:
         """Utility for calculating h(s) from start to goal node"""
         return self.heuristic(start, self.goal)
 
-    def search(self, variant=AStarVariants.FORWARDS):
+    def search(self, variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G):
+        self.tiebreak = tiebreak
+        if variant == AStarVariants.BACKWARDS:
+            self.start, self.goal = self.goal, self.start
         path = []
         while self.start != self.goal:
             self.counter += 1
@@ -70,8 +79,11 @@ class RepeatedAStar:
 
             self.open = MinHeap()
             self.closed = set() 
-
-            self.open.push((self.gscore[self.start] + self.h(self.start), self.start))
+            
+            if self.tiebreak == TieBreakVariants.HI_G:
+                self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
+            else:
+                self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
 
             self.compute_path()
 
@@ -102,7 +114,7 @@ class RepeatedAStar:
         #while self.gscore[self.goal] > min(self.gscore[self.start], self.h(self.start)):
         while self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
-            s = self.open.pop()[1]
+            s = self.open.pop()[2]
             if s != self.start and s != self.goal:
                 self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
                 pygame.display.flip()
@@ -127,12 +139,15 @@ class RepeatedAStar:
                     # Trace
                     self.tree[succ] = s
                     # Remove from open list 
-                    if succ in [x[1] for x in self.open]:
-                        idx = [x[1] for x in self.open].index(succ)
+                    if succ in [x[2] for x in self.open]:
+                        idx = [x[2] for x in self.open].index(succ)
                         self.open.pop_at(idx)
                     
                     fsucc = self.gscore[succ] + self.h(succ)
-                    self.open.push((fsucc, succ))
+                    if self.tiebreak == TieBreakVariants.HI_G:
+                        self.open.push((fsucc, -self.gscore[succ], succ))
+                    else:
+                        self.open.push((fsucc, self.gscore[succ], succ))
 
 
 if __name__ == '__main__':
