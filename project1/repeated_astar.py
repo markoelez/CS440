@@ -70,6 +70,7 @@ class RepeatedAStar:
         if variant == AStarVariants.BACKWARDS:
             self.start, self.goal = self.goal, self.start
         path = []
+        print(self.start, self.goal)
         while self.start != self.goal:
             self.counter += 1
             self.gscore[self.start] = 0

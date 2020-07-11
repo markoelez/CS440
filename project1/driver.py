@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 import sys
 from display import Display
 from repeated_astar import RepeatedAStar, AStarVariants, TieBreakVariants
@@ -63,22 +64,38 @@ while not done:
             elif event.key == pygame.K_1:
                 print('Running repeated forwards A* Search, tie-breaking on high g\n')
                 astar = RepeatedAStar(display, start, goal)
+                a = time.time()
                 astar.search(variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G)
+                b = time.time()
+                print("Finished running algorithm. Took {} seconds.\n".format(b - a))
+                print("-" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_2:
                 print('Running repeated forwards A* Search, tie-breaking on low g\n')
                 astar = RepeatedAStar(display, start, goal)
+                a = time.time()
                 astar.search(variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.LO_G)
+                b = time.time()
+                print("Finished running algorithm. Took {} seconds.\n".format(b - a))
+                print("-" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_3:
                 print('Running repeated backwards A* Search, tie-breaking on high g\n')
                 astar = RepeatedAStar(display, start, goal)
+                a = time.time()
                 astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.HI_G)
+                b = time.time()
+                print("Finished running algorithm. Took {} seconds.\n".format(b - a))
+                print("-" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_4:
                 print('Running repeated backwards A* Search, tie-breaking on low g\n')
                 astar = RepeatedAStar(display, start, goal)
+                a = time.time()
                 astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.LO_G)
+                b = time.time()
+                print("Finished running algorithm. Took {} seconds.\n".format(b - a))
+                print("-" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
                 print('Quitting...\n')
