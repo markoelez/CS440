@@ -145,19 +145,20 @@ class RepeatedAStar:
             # Take all actions a in A(s)
             for (dx, dy) in self.dirs:
                 (x, y) = (s.get_x() + dx, s.get_y() + dy)
+
                 # check bounds
-                if not (0 <= x < self.rows) or not (0 <= y < self.cols):
-                    continue
+                if not (0 <= x < self.rows) or not (0 <= y < self.cols): continue
+
                 # Get succ(s, a)
                 succ = self.grid.cell_at(x, y)
-                # If we reached a blocked cell
-                # Check if wall
-                #if succ.is_state(CellState.WALL):
+
+                # If we reached a blocked cell, increase action cost
                 action_cost = 1 if not succ.blocked() else float("inf")
 
                 if self._search[succ] < self.counter:
                     self.gscore[succ] = float("inf")
                     self._search[succ] = self.counter
+
                 if self.gscore[succ] > self.gscore[s] + action_cost:
                     self.gscore[succ] = self.gscore[s] + action_cost
                     # Trace
