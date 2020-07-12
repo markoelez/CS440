@@ -170,7 +170,9 @@ class RepeatedAStar:
         print("Computing path...")
 
         while self.open:
+            print("EXPANDING : {}".format(self.open.peek()))
             print(self.open)
+            print("=" * 50)
             current = self.open.pop()[2]
 
             if current == self.goal:
@@ -183,17 +185,13 @@ class RepeatedAStar:
                     continue
                 
                 # Get g(n) -- distance from start node to n
-                g = self.gscore[current] + self.heuristic(current, neighbor)
+                g = self.gscore[current] + self.action_costs[current]
 
                 # Get h(n) -- cost from n to goal
                 h = self.h(current)
 
                 # Check bounds
                 if not (0 <= neighbor.get_x() < self.grid_size) or not (0 <= neighbor.get_y() < self.grid_size):
-                    continue
-
-                # Check if cell is blocked off 
-                if self.grid.cell_at(neighbor.get_x(), neighbor.get_y()).is_state(CellState.WALL):
                     continue
 
                 # Check if visited
