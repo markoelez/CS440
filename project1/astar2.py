@@ -170,6 +170,7 @@ class RepeatedAStar:
         print("Computing path...")
 
         while self.open:
+            print(self.open)
             current = self.open.pop()[2]
 
             if current == self.goal:
