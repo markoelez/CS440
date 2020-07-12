@@ -90,6 +90,18 @@ class RepeatedAStar:
             if n != self.og_start and n != self.goal:
                 self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
             pygame.display.flip()
+    
+    def look_around(self, start):
+        blocked = []
+        for (dx, dy) in self.dirs:
+            try:
+                tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
+                if tmp.blocked():
+                    self.action_costs[tmp] = float("inf")
+                    blocked.append(tmp)
+            except: 
+                continue
+        return blocked
 
     def search(self, variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G):
         colors = (EXPLORE_COLOR, (153, 216, 208), (255, 202, 194))
@@ -110,18 +122,11 @@ class RepeatedAStar:
             self.closed = set() 
 
             self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
-            # Look around
-            _neighbors = []
-            for (dx, dy) in self.dirs:
-                try:
-                    tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
-                    if tmp.blocked():
-                        self.action_costs[tmp] = float("inf")
-                        _neighbors.append(tmp)
-                except: 
-                    continue
 
-            self.compute_path(_neighbors, colors[0])
+            # Look around
+            blocked = self.look_around(self.start)
+
+            self.compute_path(blocked, colors[0])
 
             if not self.open:
                 print("\nCan't find a path!\n")
@@ -156,13 +161,7 @@ class RepeatedAStar:
                     self.start = curr
                     self.no_color.add(curr)
             # Rebase knowledge of adjacent cells
-            for (dx, dy) in self.dirs:
-                try:
-                    tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
-                    if tmp.blocked():
-                        self.action_costs[tmp] = float("inf")
-                except: 
-                    continue
+            blocked = self.look_around(self.start)
             # Draw new starting cell in green
             #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             # Connect start with end of this path
@@ -172,7 +171,7 @@ class RepeatedAStar:
         self.backtrack(path)
         print("\nFound path\n")
 
-    def compute_path(self, _neighbors, explore_color):
+    def compute_path(self, blocked, explore_color):
         print("Computing path...")
 
         while self.open:
@@ -201,7 +200,7 @@ class RepeatedAStar:
                     continue
                 
                 # If in observed adjacent blocked cells
-                if neighbor in _neighbors:
+                if neighbor in blocked:
                     continue
                 
                 # Get g(n) -- distance from start node to n
