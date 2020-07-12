@@ -119,7 +119,7 @@ class RepeatedAStar:
                 except: 
                     continue
 
-            self.compute_path(colors[self.counter%3])
+            self.compute_path(colors[0])
 
             if not self.open:
                 print("\nCan't find a path!\n")
@@ -183,10 +183,10 @@ class RepeatedAStar:
 
             self.closed.add(current)
 
-            pygame.display.flip()
-
             if not current.blocked() and current != self.start and current != self.goal and current not in self.no_color:
                 self.viewer.draw_rect_at_pos(current.get_x(), current.get_y(), explore_color)
+
+            pygame.display.flip()
 
             if current == self.goal:
                 return
