@@ -120,7 +120,7 @@ class RepeatedAStar:
             self.open = MinHeap()
             self.closed = set() 
 
-            self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
+            self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], time.time(),  self.start))
 
             # Look around
             blocked = self.look_around(self.start)
@@ -181,7 +181,7 @@ class RepeatedAStar:
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
             print(self.open)
             # Remove cell with smallest f-value
-            s = self.open.pop()[2]
+            s = self.open.pop()[3]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
                 self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), explore_color)
                 pygame.display.flip()
@@ -213,13 +213,13 @@ class RepeatedAStar:
                     # Trace
                     self.tree[succ] = s
                     # Remove from open list 
-                    if succ in [x[2] for x in self.open]:
-                        idx = [x[2] for x in self.open].index(succ)
+                    if succ in [x[3] for x in self.open]:
+                        idx = [x[3] for x in self.open].index(succ)
                         self.open.pop_at(idx)
                     
                     fsucc = self.gscore[succ] + self.h(succ)
                     print("F: {}, H: {}, G: {}\n".format(fsucc, self.h(succ), self.gscore[succ]))
-                    self.open.push((fsucc, -self.gscore[succ], succ))
+                    self.open.push((fsucc, -self.gscore[succ], time.time(), succ))
                     '''
                     if self.tiebreak == TieBreakVariants.HI_G:
                         self.open.push((fsucc, -self.gscore[succ], succ))

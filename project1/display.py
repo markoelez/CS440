@@ -9,10 +9,10 @@ from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE, EXPLORE_COLOR
 
 #WIDTH = 40 
 #HEIGHT = 40 
-WIDTH = 10
-HEIGHT = 10 
+WIDTH = 20
+HEIGHT = 20 
 
-F = 11 
+F = 22 
 
 # Gap between cells in grid
 GAP = 1
