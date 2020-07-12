@@ -142,7 +142,7 @@ class RepeatedAStar:
                 if curr.blocked():
                     # Reached a wall, try again
                     print("Reached a wall")
-                    self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
+                    #self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
                     # Increase g score to infinity 
                     self.gscore[curr] = float("inf") 
                     # Update action cost
@@ -185,7 +185,7 @@ class RepeatedAStar:
 
             pygame.display.flip()
 
-            if not current.blocked() and current != self.start and current != self.goal:
+            if not current.blocked() and current != self.start and current != self.goal and current not in self.no_color:
                 self.viewer.draw_rect_at_pos(current.get_x(), current.get_y(), explore_color)
 
             if current == self.goal:
