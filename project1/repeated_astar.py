@@ -167,6 +167,7 @@ class RepeatedAStar:
             self.no_color.add(self.start)
         
         print("PRINTING TREE")
+        """
         _path = []
         #curr = self.goal
         curr = self.grid.cell_at(3, 4)
@@ -176,6 +177,10 @@ class RepeatedAStar:
             if not curr in self.tree:
                 break
             curr = self.tree[curr]
+        """
+        print("="*40)
+        for k, v in self.tree.items():
+            print("Parent: {}, Child: {}\n".format(k, v))
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
