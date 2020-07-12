@@ -7,8 +7,8 @@ from grid import Grid, load_grid
 from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE, EXPLORE_COLOR
 
 
-WIDTH = 10
-HEIGHT = 10
+WIDTH = 20 
+HEIGHT = 20 
 
 # Gap between cells in grid
 GAP = 2
@@ -20,7 +20,7 @@ class Display:
         """Create a visual display from a given Grid object"""
         self.rows, self.cols = grid.get_rows(), grid.get_cols() 
 
-        self.W, self.H = (self.rows * 11) + 1, (self.rows * 11) + 1
+        self.W, self.H = (self.rows * 22) + 1, (self.rows * 22) + 1
         
         self._grid = grid
 
@@ -37,19 +37,6 @@ class Display:
 
         pygame.display.flip()
 
-    '''    
-    def listen(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return True
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    # Regular A* search
-                    astar = AStar(self, self, self._grid.get_start(), self.grid.get_goal())
-                    astar.exec_forwards()
-                    pygame.display.flip()
-        pygame.display.flip()
-    '''
     def draw_rect_at_pos(self, r, c, color):
         """Draw a rect of given color at (row, col)"""
         x1 = ((GAP + WIDTH) * c + GAP)
