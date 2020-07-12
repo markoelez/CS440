@@ -174,10 +174,19 @@ class RepeatedAStar:
         print("Computing path...")
 
         while self.open:
+            time.sleep(0.5)
             print("EXPANDING : {}".format(self.open.peek()[2]))
+
             print(self.open)
             print("=" * 50)
             current = self.open.pop()[2]
+
+            self.closed.add(current)
+
+            pygame.display.flip()
+
+            if not current.blocked() and current != self.start and current != self.goal:
+                self.viewer.draw_rect_at_pos(current.get_x(), current.get_y(), explore_color)
 
             if current == self.goal:
                 return
@@ -204,11 +213,6 @@ class RepeatedAStar:
 
                     self.gscore[neighbor] = g 
                     self.fscore[neighbor] = g + self.h(neighbor)
-                    
-                    if not neighbor.blocked() and neighbor != self.start and neighbor != self.goal:
-                        self.viewer.draw_rect_at_pos(neighbor.get_x(), neighbor.get_y(), explore_color)
-
-                    pygame.display.flip()
 
                     self.open.push((self.fscore[neighbor], self.gscore[neighbor], neighbor))
 
