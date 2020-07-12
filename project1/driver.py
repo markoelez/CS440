@@ -3,8 +3,8 @@
 import time
 import sys
 from display import Display
-#from repeated_astar import RepeatedAStar, AStarVariants, TieBreakVariants
-from astar2 import RepeatedAStar, AStarVariants, TieBreakVariants
+from repeated_astar import RepeatedAStar, AStarVariants, TieBreakVariants
+#from astar2 import RepeatedAStar, AStarVariants, TieBreakVariants
 from grid import Grid, load_grid
 from cell import Cell, CellState
 from world import World

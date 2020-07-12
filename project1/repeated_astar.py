@@ -169,7 +169,10 @@ class RepeatedAStar:
             #self.backtrack(connect)
             self.no_color.add(self.start)
 
-        self.backtrack(self.path[self.path.index(self.og_start):])
+        if self.og_start in self.path:
+            self.backtrack(self.path[self.path.index(self.og_start):])
+        else:
+            self.backtrack(self.path)
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
