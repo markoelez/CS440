@@ -33,7 +33,7 @@ class MinHeap:
         return self.array[idx]
 
     def __str__(self):
-        return "\nHEAP --------------------- START: \n" + "\n ".join(map(str, map(lambda x: "Cell: {}, F: {}, G: {}.".format(x[0], x[1], x[2]), self.array))) + "\nHEAP --------------------- END\n"
+        return "\nHEAP --------------------- START: \n" + "\n ".join(map(str, map(lambda x: "Cell: {}, F: {}, G: {}.".format(x[2], x[0], x[1]), self.array))) + "\nHEAP --------------------- END\n"
 
     def __len__(self):
         return len(self.array)
