@@ -104,9 +104,10 @@ class RepeatedAStar:
             # Follow path until we reach goal or action cost increases
             curr = self.goal
             path = []
-            while curr != self.start:
+            while curr and curr != self.start:
                 path.append(curr)
-                curr = self.tree[curr]
+                if curr in self.tree:
+                    curr = self.tree[curr]
 
             # Follow path
             for curr in path[::-1]:
@@ -130,16 +131,16 @@ class RepeatedAStar:
 
     def compute_path(self):
         print("Computing path...")
-        #while self.gscore[self.goal] > min(self.gscore[self.start], self.h(self.start)):
+
         while self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s != self.start and s != self.goal:
-                if s.blocked():
-                    self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), (246, 159, 124))
-                else:
-                    self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
+                self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
                 pygame.display.flip()
+            # Check if cell already expanded
+            if s in self.closed:
+                continue
             # Expand cell
             self.closed.add(s)
             # Take all actions a in A(s)
@@ -154,6 +155,9 @@ class RepeatedAStar:
 
                 # If we reached a blocked cell, increase action cost
                 action_cost = 1 if not succ.blocked() else float("inf")
+                # Color discovered walls orange
+                if succ.blocked():
+                    self.viewer.draw_rect_at_pos(succ.get_x(), succ.get_y(), (246, 159, 124))
 
                 if self._search[succ] < self.counter:
                     self.gscore[succ] = float("inf")
