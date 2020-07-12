@@ -33,7 +33,7 @@ class MinHeap:
         return self.array[idx]
 
     def __str__(self):
-        return "HEAP: " + ", ".join(map(str, map(lambda x: x[2], self.array)))
+        return "HEAP: " + "\n ".join(map(str, map(lambda x: x[2], self.array))) + "\n"
 
     def __len__(self):
         return len(self.array)

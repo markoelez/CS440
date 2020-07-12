@@ -3,7 +3,8 @@
 import time
 import sys
 from display import Display
-from repeated_astar import RepeatedAStar, AStarVariants, TieBreakVariants
+#from repeated_astar import RepeatedAStar, AStarVariants, TieBreakVariants
+from astar2 import RepeatedAStar, AStarVariants, TieBreakVariants
 from grid import Grid, load_grid
 from cell import Cell, CellState
 from world import World
@@ -47,10 +48,10 @@ grid.maze[2][3].set_state(CellState.WALL)
 grid.maze[3][3].set_state(CellState.WALL)
 grid.maze[4][3].set_state(CellState.WALL)
 
-grid.maze[4][2].set_state(CellState.START)
+grid.maze[4][1].set_state(CellState.START)
 grid.maze[4][4].set_state(CellState.END)
 
-grid.start = grid.cell_at(4, 2)
+grid.start = grid.cell_at(4, 1)
 grid.goal = grid.cell_at(4, 4)
 
 # Get start and goal positions
