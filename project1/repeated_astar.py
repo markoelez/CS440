@@ -108,6 +108,12 @@ class RepeatedAStar:
                 self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
             else:
                 self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
+            
+            # Look around
+            for (dx, dy) in self.dirs:
+                tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
+                if tmp.blocked():
+                    self.action_costs[tmp] = float("inf")
 
             self.compute_path(colors[self.counter%3])
 

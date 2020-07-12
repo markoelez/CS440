@@ -11,7 +11,7 @@ WIDTH = 10
 HEIGHT = 10
 
 # Gap between cells in grid
-GAP = 1
+GAP = 2
 
 
 class Display:
