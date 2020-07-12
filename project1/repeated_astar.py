@@ -143,8 +143,6 @@ class RepeatedAStar:
                 if curr in self.tree:
                     curr = self.tree[curr]
 
-            print("here")
-            
             segment = []
             # Follow path
             for curr in path[::-1]:
@@ -181,16 +179,18 @@ class RepeatedAStar:
         print("PRINTING TREE")
         _path = []
         curr = self.goal
+        #curr = self.grid.cell_at(3, 4)
         while curr != self.og_start:
             print(curr)
             _path.append(curr)
-        self.backtrack(_path)
+            if not curr in self.tree:
+                break
+            curr = self.tree[curr]
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
-        print("Computing path...")
-
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
+            print("Computing path...")
             print(self.open)
             # Remove cell with smallest f-value
             s = self.open.pop()[3]
@@ -199,6 +199,7 @@ class RepeatedAStar:
                 pygame.display.flip()
             # Check if cell already expanded
             if s in self.closed: continue
+
             # Expand cell
             self.closed.add(s)
             # Take all actions a in A(s)
@@ -224,6 +225,8 @@ class RepeatedAStar:
                     self.gscore[succ] = self.gscore[s] + action_cost
                     # Trace
                     self.tree[succ] = s
+                    print("--" * 10)
+                    print("SUCC: ", succ, self.gscore[succ])
                     # Remove from open list 
                     if succ in [x[3] for x in self.open]:
                         idx = [x[3] for x in self.open].index(succ)
@@ -238,7 +241,6 @@ class RepeatedAStar:
                     else:
                         self.open.push((fsucc, self.gscore[succ], succ))
                     '''
-
 
 
 if __name__ == '__main__':

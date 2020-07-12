@@ -34,7 +34,7 @@ class MinHeap:
 
     def __str__(self):
         heapq.heapify(self.array)
-        return "\nHEAP --------------------- START: \n" + "\n ".join(map(str, map(lambda x: "Cell: {}, F: {}, G: {}, H: {}.".format(x[2], x[0], x[1], x[0] - x[1]), self.array))) + "\nHEAP --------------------- END\n"
+        return "\nHEAP --------------------- START: \n" + "\n ".join(map(str, map(lambda x: "Cell: {}, F: {}, G: {}, H: {}.".format(x[3], x[0], x[1], x[0] - x[1]), self.array))) + "\nHEAP --------------------- END\n"
 
     def __len__(self):
         return len(self.array)

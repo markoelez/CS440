@@ -171,11 +171,17 @@ class RepeatedAStar:
             # Connect start with end of this path
             #self.backtrack(connect)
             self.no_color.add(self.start)
-        
-        if self.og_start in self.path:
-            self.backtrack(self.path[self.path.index(self.og_start):])
-        else:
-            self.backtrack(self.path)
+        print("PRINTING TREE")
+        _path = []
+        curr = self.goal
+        #curr = self.grid.cell_at(3, 4)
+        while curr != self.og_start:
+            print(curr)
+            _path.append(curr)
+            if not curr in self.tree:
+                break
+            curr = self.tree[curr]
+        self.backtrack(_path)
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
@@ -228,7 +234,6 @@ class RepeatedAStar:
                     self.fscore[neighbor] = g + self.h(neighbor)
 
                     self.open.push((self.fscore[neighbor], self.gscore[neighbor], time.time(), neighbor))
-
 
 if __name__ == '__main__':
 
