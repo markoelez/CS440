@@ -7,8 +7,12 @@ from grid import Grid, load_grid
 from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE, EXPLORE_COLOR
 
 
-WIDTH = 40 
-HEIGHT = 40 
+#WIDTH = 40 
+#HEIGHT = 40 
+WIDTH = 10
+HEIGHT = 10 
+
+F = 11 
 
 # Gap between cells in grid
 GAP = 1
@@ -20,7 +24,7 @@ class Display:
         """Create a visual display from a given Grid object"""
         self.rows, self.cols = grid.get_rows(), grid.get_cols() 
 
-        self.W, self.H = (self.rows * 44) + 1, (self.rows * 44) + 1
+        self.W, self.H = (self.rows * F) + 1, (self.rows * F) + 1
         
         self._grid = grid
 

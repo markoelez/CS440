@@ -55,6 +55,8 @@ class RepeatedAStar:
 
         self.tree = {}
 
+        self.path = []
+
         self.explore_colors = [BLUE, EXPLORE_COLOR]
 
         # Initialize search(s) = 0 
@@ -78,14 +80,27 @@ class RepeatedAStar:
 
     def h(self, start):
         """Utility for calculating h(s) from start to goal node"""
-        return self.heuristic(start, self.goal)
+        return abs(start.get_x() - self.goal.get_x()) + abs(start.get_y() - self.goal.get_y())
 
     def backtrack(self, path):
-        path = path[::-1]
+        for x in path:
+            print(x)
         for n in path[:-1]:
-            if n != self.start and n != self.goal:
+            if n != self.og_start and n != self.goal:
                 self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
             pygame.display.flip()
+
+    def look_around(self, start):
+        blocked = []
+        for (dx, dy) in self.dirs:
+            try:
+                tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
+                if tmp.blocked():
+                    self.action_costs[tmp] = float("inf")
+                    blocked.append(tmp)
+            except: 
+                continue
+        return blocked
 
     def search(self, variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G):
         colors = (EXPLORE_COLOR, (153, 216, 208), (255, 202, 194))
@@ -104,23 +119,13 @@ class RepeatedAStar:
 
             self.open = MinHeap()
             self.closed = set() 
-            ''' 
-            if self.tiebreak == TieBreakVariants.HI_G:
-                self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
-            else:
-                self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
-            ''' 
-            self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
-            # Look around
-            for (dx, dy) in self.dirs:
-                try:
-                    tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
-                    if tmp.blocked():
-                        self.action_costs[tmp] = float("inf")
-                except: 
-                    continue
 
-            self.compute_path(colors[self.counter%3])
+            self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
+
+            # Look around
+            blocked = self.look_around(self.start)
+
+            self.compute_path(blocked, colors[0])
 
             if not self.open:
                 print("\nCan't find a path!\n")
@@ -130,17 +135,21 @@ class RepeatedAStar:
             curr = self.goal
             path = []
             connect = [self.start]
+            print('test')
+            print(curr, path, connect)
             while curr and curr != self.start:
                 path.append(curr)
                 if curr in self.tree:
                     curr = self.tree[curr]
+
+            print("here")
 
             # Follow path
             for curr in path[::-1]:
                 if curr.blocked():
                     # Reached a wall, try again
                     print("Reached a wall")
-                    self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
+                    #self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
                     # Increase g score to infinity 
                     self.gscore[curr] = float("inf") 
                     # Update action cost
@@ -148,27 +157,22 @@ class RepeatedAStar:
                     break
                 else:
                     # If unblocked, move start
+                    self.path.append(curr)
                     connect.append(curr)
                     self.start = curr
                     self.no_color.add(curr)
             # Rebase knowledge of adjacent cells
-            for (dx, dy) in self.dirs:
-                try:
-                    tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
-                    if tmp.blocked():
-                        self.action_costs[tmp] = float("inf")
-                except: 
-                    continue
+            blocked = self.look_around(self.start)
             # Draw new starting cell in green
-            self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
+            #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             # Connect start with end of this path
-            self.backtrack(connect)
+            #self.backtrack(connect)
             self.no_color.add(self.start)
 
-        #self.backtrack([i for sublist in self.paths for i in sublist])
+        self.backtrack(self.path[self.path.index(self.og_start):])
         print("\nFound path\n")
 
-    def compute_path(self, explore_color):
+    def compute_path(self, blocked, explore_color):
         print("Computing path...")
 
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
@@ -184,7 +188,6 @@ class RepeatedAStar:
             self.closed.add(s)
             # Take all actions a in A(s)
             for (dx, dy) in self.dirs:
-                time.sleep(0.3)
                 (x, y) = (s.get_x() + dx, s.get_y() + dy)
 
                 # check bounds
@@ -192,6 +195,9 @@ class RepeatedAStar:
 
                 # Get succ(s, a)
                 succ = self.grid.cell_at(x, y)
+
+                if succ in blocked:
+                    continue
 
                 action_cost = self.action_costs[succ]
 
