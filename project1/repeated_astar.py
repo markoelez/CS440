@@ -135,9 +135,6 @@ class RepeatedAStar:
             # Follow path until we reach goal or action cost increases
             curr = self.goal
             path = []
-            connect = [self.start]
-            print('test')
-            print(curr, path, connect)
             while curr and curr != self.start:
                 path.append(curr)
                 if curr in self.tree:
@@ -153,7 +150,7 @@ class RepeatedAStar:
                     # Increase g score to infinity 
                     self.gscore[curr] = float("inf") 
                     # Update action cost
-                    #self.action_costs[curr] = float("inf")
+                    self.action_costs[curr] = float("inf")
                     break
                 else:
                     # If unblocked, move start
@@ -161,25 +158,18 @@ class RepeatedAStar:
 
                     self.start = curr
                     self.no_color.add(curr)
+
             # Rebase knowledge of adjacent cells
             blocked = self.look_around(self.start)
             
             # Draw new starting cell in green
             #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
-            # Connect start with end of this path
-            #self.backtrack(connect)
             self.no_color.add(self.start)
-        """
-        if self.og_start in self.path:
-            self.backtrack(self.path[self.path.index(self.og_start):])
-        else:
-            self.backtrack(self.path)
-        """
         
         print("PRINTING TREE")
         _path = []
-        curr = self.goal
-        #curr = self.grid.cell_at(3, 4)
+        #curr = self.goal
+        curr = self.grid.cell_at(3, 4)
         while curr != self.og_start:
             print(curr)
             _path.append(curr)
