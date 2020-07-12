@@ -111,15 +111,17 @@ class RepeatedAStar:
 
             self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
             # Look around
+            _neighbors = []
             for (dx, dy) in self.dirs:
                 try:
                     tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
                     if tmp.blocked():
                         self.action_costs[tmp] = float("inf")
+                        _neighbors.append(tmp)
                 except: 
                     continue
 
-            self.compute_path(colors[0])
+            self.compute_path(_neighbors, colors[0])
 
             if not self.open:
                 print("\nCan't find a path!\n")
@@ -130,7 +132,7 @@ class RepeatedAStar:
             path = []
             connect = [self.start]
             print(curr, path, connect)
-            while curr and curr != self.start:
+            while curr and curr != self.og_start:
                 path.append(curr)
                 if curr in self.tree:
                     curr = self.tree[curr]
@@ -170,18 +172,19 @@ class RepeatedAStar:
         self.backtrack(path)
         print("\nFound path\n")
 
-    def compute_path(self, explore_color):
+    def compute_path(self, _neighbors, explore_color):
         print("Computing path...")
 
         while self.open:
-            time.sleep(0.5)
+            time.sleep(0)
             print("EXPANDING : {}".format(self.open.peek()[2]))
 
             print(self.open)
             print("=" * 50)
             current = self.open.pop()[2]
-
-            self.closed.add(current)
+            
+            if not current in self.closed:
+                self.closed.add(current)
 
             if not current.blocked() and current != self.start and current != self.goal and current not in self.no_color:
                 self.viewer.draw_rect_at_pos(current.get_x(), current.get_y(), explore_color)
@@ -195,6 +198,10 @@ class RepeatedAStar:
                 try:
                     neighbor = self.grid.cell_at(current.get_x() + dx, current.get_y() + dy)
                 except:
+                    continue
+                
+                # If in observed adjacent blocked cells
+                if neighbor in _neighbors:
                     continue
                 
                 # Get g(n) -- distance from start node to n
