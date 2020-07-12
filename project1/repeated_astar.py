@@ -36,8 +36,9 @@ class RepeatedAStar:
         self.og_start = start
         self.goal = goal 
 
-        #self.dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-        self.dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        # S, E, N, W
+        self.dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+
         self.open= MinHeap()
         self.closed = set()
 
@@ -143,7 +144,8 @@ class RepeatedAStar:
                     curr = self.tree[curr]
 
             print("here")
-
+            
+            segment = []
             # Follow path
             for curr in path[::-1]:
                 if curr.blocked():
@@ -158,21 +160,31 @@ class RepeatedAStar:
                 else:
                     # If unblocked, move start
                     self.path.append(curr)
-                    connect.append(curr)
+
                     self.start = curr
                     self.no_color.add(curr)
             # Rebase knowledge of adjacent cells
             blocked = self.look_around(self.start)
+            
             # Draw new starting cell in green
             #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             # Connect start with end of this path
             #self.backtrack(connect)
             self.no_color.add(self.start)
-
+        """
         if self.og_start in self.path:
             self.backtrack(self.path[self.path.index(self.og_start):])
         else:
             self.backtrack(self.path)
+        """
+        
+        print("PRINTING TREE")
+        _path = []
+        curr = self.goal
+        while curr != self.og_start:
+            print(curr)
+            _path.append(curr)
+        self.backtrack(_path)
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):

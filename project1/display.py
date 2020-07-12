@@ -7,12 +7,13 @@ from grid import Grid, load_grid
 from constants import BLACK, WHITE, GREEN, RED, YELLOW, BLUE, EXPLORE_COLOR
 
 
-#WIDTH = 40 
-#HEIGHT = 40 
+WIDTH = 40 
+HEIGHT = 40 
+"""
 WIDTH = 20
 HEIGHT = 20 
-
-F = 22 
+"""
+F = 44 
 
 # Gap between cells in grid
 GAP = 1
