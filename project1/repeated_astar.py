@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 import sys
 import pygame
 from display import Display
@@ -109,12 +110,15 @@ class RepeatedAStar:
             else:
                 self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
             ''' 
-            self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
+            self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
             # Look around
             for (dx, dy) in self.dirs:
-                tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
-                if tmp.blocked():
-                    self.action_costs[tmp] = float("inf")
+                try:
+                    tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
+                    if tmp.blocked():
+                        self.action_costs[tmp] = float("inf")
+                except: 
+                    continue
 
             self.compute_path(colors[self.counter%3])
 
@@ -149,9 +153,12 @@ class RepeatedAStar:
                     self.no_color.add(curr)
             # Rebase knowledge of adjacent cells
             for (dx, dy) in self.dirs:
-                tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
-                if tmp.blocked():
-                    self.action_costs[tmp] = float("inf")
+                try:
+                    tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
+                    if tmp.blocked():
+                        self.action_costs[tmp] = float("inf")
+                except: 
+                    continue
             # Draw new starting cell in green
             self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             # Connect start with end of this path
@@ -165,6 +172,7 @@ class RepeatedAStar:
         print("Computing path...")
 
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
+            print(self.open)
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
@@ -176,6 +184,7 @@ class RepeatedAStar:
             self.closed.add(s)
             # Take all actions a in A(s)
             for (dx, dy) in self.dirs:
+                time.sleep(0.3)
                 (x, y) = (s.get_x() + dx, s.get_y() + dy)
 
                 # check bounds
@@ -200,7 +209,8 @@ class RepeatedAStar:
                         self.open.pop_at(idx)
                     
                     fsucc = self.gscore[succ] + self.h(succ)
-                    self.open.push((fsucc, self.gscore[succ], succ))
+                    print("F: {}, H: {}, G: {}\n".format(fsucc, self.h(succ), self.gscore[succ]))
+                    self.open.push((fsucc, -self.gscore[succ], succ))
                     '''
                     if self.tiebreak == TieBreakVariants.HI_G:
                         self.open.push((fsucc, -self.gscore[succ], succ))

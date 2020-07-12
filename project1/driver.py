@@ -14,8 +14,8 @@ NUM_GRID_WORLDS = 5#50
 
 #GRID_WORLD_SIZE_W = 101
 #GRID_WORLD_SIZE_H = 101
-GRID_WORLD_SIZE_W = 30 
-GRID_WORLD_SIZE_H = 30 
+GRID_WORLD_SIZE_W = 5 
+GRID_WORLD_SIZE_H = 5 
 
 GRID_WORLD_DIMENS = (GRID_WORLD_SIZE_W, GRID_WORLD_SIZE_H)
 
@@ -34,7 +34,24 @@ if not isinstance(grid_num, int) or grid_num < 0 or grid_num >= NUM_GRID_WORLDS:
     raise ValueError("Provided index is out of range")
 
 # Get grid
-grid = world[grid_num]
+#grid = world[grid_num]
+grid = Grid(5, 5)
+for r in range(len(grid.maze)):
+    for c in range(len(grid.maze[0])):
+        tmp = grid.cell_at(r, c)
+        tmp.set_state(CellState.FREE)
+grid.maze[1][2].set_state(CellState.WALL)
+grid.maze[2][2].set_state(CellState.WALL)
+grid.maze[3][2].set_state(CellState.WALL)
+grid.maze[2][3].set_state(CellState.WALL)
+grid.maze[3][3].set_state(CellState.WALL)
+grid.maze[4][3].set_state(CellState.WALL)
+
+grid.maze[4][2].set_state(CellState.START)
+grid.maze[4][4].set_state(CellState.END)
+
+grid.start = grid.cell_at(4, 2)
+grid.goal = grid.cell_at(4, 4)
 
 # Get start and goal positions
 start, goal = grid.get_start(), grid.get_goal()
