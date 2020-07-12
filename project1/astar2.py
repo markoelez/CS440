@@ -164,10 +164,10 @@ class RepeatedAStar:
             # Draw new starting cell in green
             #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             # Connect start with end of this path
-            self.backtrack(connect)
+            #self.backtrack(connect)
             self.no_color.add(self.start)
 
-        #self.backtrack([i for sublist in self.paths for i in sublist])
+        self.backtrack(path)
         print("\nFound path\n")
 
     def compute_path(self, explore_color):
