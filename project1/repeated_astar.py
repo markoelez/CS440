@@ -36,7 +36,6 @@ class RepeatedAStar:
         self.goal = goal 
 
         self.dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-
         self.open= MinHeap()
         self.closed = set()
 
@@ -152,7 +151,7 @@ class RepeatedAStar:
     def compute_path(self, explore_color):
         print("Computing path...")
 
-        while self.open.peek()[0] < self.gscore[self.goal]:
+        while self.open and self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():

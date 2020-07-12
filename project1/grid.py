@@ -77,15 +77,6 @@ class Grid:
             start.set_state(CellState.FREE)
 
             self.dfs(start, visited)
-        """ 
-        # Create borders
-        for i in range(self.w):
-            self.cell_at(i, 0).set_state(CellState.WALL)
-            self.cell_at(i, self.h - 1).set_state(CellState.WALL)
-        for i in range(self.h):
-            self.cell_at(0, i).set_state(CellState.WALL)
-            self.cell_at(self.w - 1, i).set_state(CellState.WALL)
-        """ 
 
         # Choose random start and end
         start = self.cell_at(random.randint(1, self.w - 2), random.randint(1, self.h - 2))
