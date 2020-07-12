@@ -103,12 +103,13 @@ class RepeatedAStar:
 
             self.open = MinHeap()
             self.closed = set() 
-            
+            ''' 
             if self.tiebreak == TieBreakVariants.HI_G:
                 self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
             else:
                 self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
-            
+            ''' 
+            self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
             # Look around
             for (dx, dy) in self.dirs:
                 tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
@@ -199,10 +200,14 @@ class RepeatedAStar:
                         self.open.pop_at(idx)
                     
                     fsucc = self.gscore[succ] + self.h(succ)
+                    self.open.push((fsucc, self.gscore[succ], succ))
+                    '''
                     if self.tiebreak == TieBreakVariants.HI_G:
                         self.open.push((fsucc, -self.gscore[succ], succ))
                     else:
                         self.open.push((fsucc, self.gscore[succ], succ))
+                    '''
+
 
 
 if __name__ == '__main__':
