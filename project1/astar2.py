@@ -35,6 +35,8 @@ class RepeatedAStar:
         self.start = start
         self.og_start = start
         self.goal = goal 
+
+        self.path = []
         
         # S, E, N, W
         self.dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
@@ -85,7 +87,8 @@ class RepeatedAStar:
         return abs(start.get_x() - self.goal.get_x()) + abs(start.get_y() - self.goal.get_y())
 
     def backtrack(self, path):
-        path = path[::-1]
+        for x in path:
+            print(x)
         for n in path[:-1]:
             if n != self.og_start and n != self.goal:
                 self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
@@ -136,8 +139,9 @@ class RepeatedAStar:
             curr = self.goal
             path = []
             connect = [self.start]
+            print('test')
             print(curr, path, connect)
-            while curr and curr != self.og_start:
+            while curr and curr != self.start:
                 path.append(curr)
                 if curr in self.tree:
                     curr = self.tree[curr]
@@ -157,6 +161,7 @@ class RepeatedAStar:
                     break
                 else:
                     # If unblocked, move start
+                    self.path.append(curr)
                     connect.append(curr)
                     self.start = curr
                     self.no_color.add(curr)
@@ -168,7 +173,7 @@ class RepeatedAStar:
             #self.backtrack(connect)
             self.no_color.add(self.start)
 
-        self.backtrack(path)
+        self.backtrack(self.path[self.path.index(self.og_start):])
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
