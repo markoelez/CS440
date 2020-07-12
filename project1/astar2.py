@@ -35,9 +35,10 @@ class RepeatedAStar:
         self.start = start
         self.og_start = start
         self.goal = goal 
+        
+        # S, E, N, W
+        self.dirs = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 
-        #self.dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-        self.dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         self.open= MinHeap()
         self.closed = set()
 
@@ -78,6 +79,7 @@ class RepeatedAStar:
 
     def h(self, start):
         """Utility for calculating h(s) from start to goal node"""
+        print("\n Calculating h({}). Goal: {}. Got: {}\n".format(start, self.goal, self.heuristic(start, self.goal)))
         return self.heuristic(start, self.goal)
 
     def backtrack(self, path):
@@ -170,7 +172,7 @@ class RepeatedAStar:
         print("Computing path...")
 
         while self.open:
-            print("EXPANDING : {}".format(self.open.peek()))
+            print("EXPANDING : {}".format(self.open.peek()[2]))
             print(self.open)
             print("=" * 50)
             current = self.open.pop()[2]
@@ -186,9 +188,6 @@ class RepeatedAStar:
                 
                 # Get g(n) -- distance from start node to n
                 g = self.gscore[current] + self.action_costs[current]
-
-                # Get h(n) -- cost from n to goal
-                h = self.h(current)
 
                 # Check bounds
                 if not (0 <= neighbor.get_x() < self.grid_size) or not (0 <= neighbor.get_y() < self.grid_size):
