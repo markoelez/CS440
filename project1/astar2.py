@@ -87,7 +87,7 @@ class RepeatedAStar:
     def backtrack(self, path):
         path = path[::-1]
         for n in path[:-1]:
-            if n != self.start and n != self.goal:
+            if n != self.og_start and n != self.goal:
                 self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
             pygame.display.flip()
 
