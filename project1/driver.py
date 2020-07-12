@@ -43,6 +43,7 @@ start, goal = grid.get_start(), grid.get_goal()
 display = Display(grid)
 
 # Start main loop
+print("="*60)
 print("Instructions: \n")
 print("Press 0 to reset the grid to its default state\n")
 print("Press 1 to run repeated forward A* (tie-break high g) search from starting cell (green) to goal cell (red)\n")
@@ -51,6 +52,7 @@ print("Press 3 to run repeated backward A* (tie-break high g) search from goal c
 print("Press 4 to run repeated backward A* (tie-break low g) search from goal cell (red) to start cell (green)\n")
 print("Press q or esc tq or esc too quit the program\n")
 print("Listening for input...\n")
+print("="*60)
 done = False
 while not done:
     for event in pygame.event.get():
@@ -68,7 +70,7 @@ while not done:
                 astar.search(variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G)
                 b = time.time()
                 print("Finished running algorithm. Took {} seconds.\n".format(b - a))
-                print("-" * 60)
+                print("=" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_2:
                 print('Running repeated forwards A* Search, tie-breaking on low g\n')
@@ -77,7 +79,7 @@ while not done:
                 astar.search(variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.LO_G)
                 b = time.time()
                 print("Finished running algorithm. Took {} seconds.\n".format(b - a))
-                print("-" * 60)
+                print("=" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_3:
                 print('Running repeated backwards A* Search, tie-breaking on high g\n')
@@ -86,7 +88,7 @@ while not done:
                 astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.HI_G)
                 b = time.time()
                 print("Finished running algorithm. Took {} seconds.\n".format(b - a))
-                print("-" * 60)
+                print("=" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_4:
                 print('Running repeated backwards A* Search, tie-breaking on low g\n')
@@ -95,7 +97,7 @@ while not done:
                 astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.LO_G)
                 b = time.time()
                 print("Finished running algorithm. Took {} seconds.\n".format(b - a))
-                print("-" * 60)
+                print("=" * 60)
                 pygame.display.flip()
             elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
                 print('Quitting...\n')

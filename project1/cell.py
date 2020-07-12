@@ -21,6 +21,9 @@ class Cell:
         # Initialize as unset 
         self.state = state
 
+    def blocked(self):
+        return self.state == CellState.WALL
+
     def get_x(self):
         return self.x
 

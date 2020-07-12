@@ -48,12 +48,20 @@ class RepeatedAStar:
 
         self.tree = {}
 
+        self.explore_colors = [BLUE, EXPLORE_COLOR]
+
         # Initialize search(s) = 0 
         self._search = {}
         for r in range(self.grid.get_rows()):
             for c in range(self.grid.get_cols()):
                 self._search[self.grid.cell_at(r, c)] = 0
         self.counter = 0
+
+        # Initialize all action costs to 1
+        self.action_costs = {}
+        for r in range(self.grid.get_rows()):
+            for c in range(self.grid.get_cols()):
+                self.action_costs[self.grid.cell_at(r, c)] = 1
 
         self.tiebreak = TieBreakVariants.HI_G
 
@@ -70,12 +78,13 @@ class RepeatedAStar:
         if variant == AStarVariants.BACKWARDS:
             self.start, self.goal = self.goal, self.start
         path = []
-        print(self.start, self.goal)
         while self.start != self.goal:
             self.counter += 1
+
             self.gscore[self.start] = 0
-            self._search[self.start] = self.counter
             self.gscore[self.goal] = float("inf")
+
+            self._search[self.start] = self.counter
             self._search[self.goal] = self.counter
 
             self.open = MinHeap()
@@ -98,9 +107,17 @@ class RepeatedAStar:
             while curr != self.start:
                 path.append(curr)
                 curr = self.tree[curr]
-            
-            # Move start up path
-            self.start = path[::-1][-1]
+
+            # Follow path
+            for curr in path[::-1]:
+                if curr.blocked():
+                    # Reached a wall, try again
+                    print("Reached a wall")
+                    break
+                else:
+                    self.start = curr
+            self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
+
         
         self.backtrack(path)
         print("\nFound path\n")
@@ -112,12 +129,16 @@ class RepeatedAStar:
             pygame.display.flip()
 
     def compute_path(self):
+        print("Computing path...")
         #while self.gscore[self.goal] > min(self.gscore[self.start], self.h(self.start)):
         while self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s != self.start and s != self.goal:
-                self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
+                if s.blocked():
+                    self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), (246, 159, 124))
+                else:
+                    self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
                 pygame.display.flip()
             # Expand cell
             self.closed.add(s)
@@ -129,14 +150,16 @@ class RepeatedAStar:
                     continue
                 # Get succ(s, a)
                 succ = self.grid.cell_at(x, y)
+                # If we reached a blocked cell
                 # Check if wall
-                if succ.is_state(CellState.WALL):
-                    continue
+                #if succ.is_state(CellState.WALL):
+                action_cost = 1 if not succ.blocked() else float("inf")
+
                 if self._search[succ] < self.counter:
                     self.gscore[succ] = float("inf")
                     self._search[succ] = self.counter
-                if self.gscore[succ] > self.gscore[s] + 1:
-                    self.gscore[succ] = self.gscore[s] + 1
+                if self.gscore[succ] > self.gscore[s] + action_cost:
+                    self.gscore[succ] = self.gscore[s] + action_cost
                     # Trace
                     self.tree[succ] = s
                     # Remove from open list 
