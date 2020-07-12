@@ -73,6 +73,12 @@ class RepeatedAStar:
         """Utility for calculating h(s) from start to goal node"""
         return self.heuristic(start, self.goal)
 
+    def backtrack(self, path):
+        path = path[::-1]
+        for n in path[:-1]:
+            self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
+            pygame.display.flip()
+
     def search(self, variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G):
         self.tiebreak = tiebreak
         if variant == AStarVariants.BACKWARDS:
@@ -116,18 +122,13 @@ class RepeatedAStar:
                     print("Reached a wall")
                     break
                 else:
+                    # If unblocked, move start
                     self.start = curr
+            # Draw new starting cell in green
             self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
 
-        
         self.backtrack(path)
         print("\nFound path\n")
-
-    def backtrack(self, path):
-        path = path[::-1]
-        for n in path[:-1]:
-            self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
-            pygame.display.flip()
 
     def compute_path(self):
         print("Computing path...")
