@@ -123,7 +123,7 @@ class RepeatedAStar:
             self.open = MinHeap()
             self.closed = set() 
 
-            self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
+            self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], time.time(), self.start))
 
             # Look around
             blocked = self.look_around(self.start)
@@ -183,11 +183,11 @@ class RepeatedAStar:
 
         while self.open:
             time.sleep(0)
-            print("EXPANDING : {}".format(self.open.peek()[2]))
+            print("EXPANDING : {}".format(self.open.peek()[3]))
 
             print(self.open)
             print("=" * 50)
-            current = self.open.pop()[2]
+            current = self.open.pop()[3]
             
             if not current in self.closed:
                 self.closed.add(current)
@@ -221,13 +221,13 @@ class RepeatedAStar:
                 if neighbor in self.closed and g >= self.gscore.get(neighbor, 0):
                     continue
                 
-                if g < self.gscore.get(neighbor, 0) or neighbor not in [i[2] for i in self.open]:
+                if g < self.gscore.get(neighbor, 0) or neighbor not in [i[3] for i in self.open]:
                     self.tree[neighbor] = current
 
                     self.gscore[neighbor] = g 
                     self.fscore[neighbor] = g + self.h(neighbor)
 
-                    self.open.push((self.fscore[neighbor], self.gscore[neighbor], neighbor))
+                    self.open.push((self.fscore[neighbor], self.gscore[neighbor], time.time(), neighbor))
 
 
 if __name__ == '__main__':

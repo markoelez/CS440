@@ -77,7 +77,8 @@ class Grid:
             start.set_state(CellState.FREE)
 
             self.dfs(start, visited)
-
+        
+        """
         # Choose random start and end
         start = self.cell_at(random.randint(1, self.w - 2), random.randint(1, self.h - 2))
         start.set_state(CellState.START)
@@ -91,6 +92,13 @@ class Grid:
 
         self.start = start
         self.goal = end 
+
+        """
+        self.start = self.cell_at(0, 0)
+        self.goal = self.cell_at(self.get_rows() - 1, self.get_cols() - 1)
+
+        self.start.set_state(CellState.START)
+        self.goal.set_state(CellState.END)
 
     def is_done(self, visited):
         for row in visited:
