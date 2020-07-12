@@ -35,6 +35,7 @@ class RepeatedAStar:
         self.og_start = start
         self.goal = goal 
 
+        #self.dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         self.dirs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         self.open= MinHeap()
         self.closed = set()
@@ -132,13 +133,18 @@ class RepeatedAStar:
                     # Increase g score to infinity 
                     self.gscore[curr] = float("inf") 
                     # Update action cost
-                    self.action_costs[curr] = float("inf")
+                    #self.action_costs[curr] = float("inf")
                     break
                 else:
                     # If unblocked, move start
                     connect.append(curr)
                     self.start = curr
                     self.no_color.add(curr)
+            # Rebase knowledge of adjacent cells
+            for (dx, dy) in self.dirs:
+                tmp = self.grid.cell_at(self.start.get_x() + dx, self.start.get_y() + dy)
+                if tmp.blocked():
+                    self.action_costs[tmp] = float("inf")
             # Draw new starting cell in green
             self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             # Connect start with end of this path
