@@ -75,12 +75,14 @@ class RepeatedAStar:
 
     def heuristic(self, a, b):
         (x1, x2), (y1, y2) = a.get_pos(), b.get_pos()
+        print(a, b, a.get_pos(), b.get_pos(), abs(x1 - x2) + abs(y1 - y2))
+
         return abs(x1 - x2) + abs(y1 - y2)
 
     def h(self, start):
         """Utility for calculating h(s) from start to goal node"""
-        print("\n Calculating h({}). Goal: {}. Got: {}\n".format(start, self.goal, self.heuristic(start, self.goal)))
-        return self.heuristic(start, self.goal)
+        #return self.heuristic(start, self.goal)
+        return abs(start.get_x() - self.goal.get_x()) + abs(start.get_y() - self.goal.get_y())
 
     def backtrack(self, path):
         path = path[::-1]
