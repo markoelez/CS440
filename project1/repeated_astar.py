@@ -42,9 +42,15 @@ class RepeatedAStar:
 
         trace = {}
 
+        self.no_color = set()
+        self.no_color.add(self.start)
+        self.no_color.add(self.goal)
+
         self.gscore = {}
         self.fscore = {}
         self.hscore = {}
+
+        self.paths = []
 
         self.tree = {}
 
@@ -76,10 +82,12 @@ class RepeatedAStar:
     def backtrack(self, path):
         path = path[::-1]
         for n in path[:-1]:
-            self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
+            if n != self.start and n != self.goal:
+                self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
             pygame.display.flip()
 
     def search(self, variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G):
+        colors = (EXPLORE_COLOR, (153, 216, 208), (255, 202, 194))
         self.tiebreak = tiebreak
         if variant == AStarVariants.BACKWARDS:
             self.start, self.goal = self.goal, self.start
@@ -101,7 +109,7 @@ class RepeatedAStar:
             else:
                 self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
 
-            self.compute_path()
+            self.compute_path(colors[self.counter%3])
 
             if not self.open:
                 print("\nCan't find a path!\n")
@@ -110,6 +118,7 @@ class RepeatedAStar:
             # Follow path until we reach goal or action cost increases
             curr = self.goal
             path = []
+            connect = [self.start]
             while curr and curr != self.start:
                 path.append(curr)
                 if curr in self.tree:
@@ -120,28 +129,37 @@ class RepeatedAStar:
                 if curr.blocked():
                     # Reached a wall, try again
                     print("Reached a wall")
+                    self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
+                    # Increase g score to infinity 
+                    self.gscore[curr] = float("inf") 
+                    # Update action cost
+                    self.action_costs[curr] = float("inf")
                     break
                 else:
                     # If unblocked, move start
+                    connect.append(curr)
                     self.start = curr
+                    self.no_color.add(curr)
             # Draw new starting cell in green
             self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
+            # Connect start with end of this path
+            self.backtrack(connect)
+            self.no_color.add(self.start)
 
-        self.backtrack(path)
+        #self.backtrack([i for sublist in self.paths for i in sublist])
         print("\nFound path\n")
 
-    def compute_path(self):
+    def compute_path(self, explore_color):
         print("Computing path...")
 
         while self.open.peek()[0] < self.gscore[self.goal]:
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
-            if s != self.start and s != self.goal:
-                self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), EXPLORE_COLOR)
+            if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
+                self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), explore_color)
                 pygame.display.flip()
             # Check if cell already expanded
-            if s in self.closed:
-                continue
+            if s in self.closed: continue
             # Expand cell
             self.closed.add(s)
             # Take all actions a in A(s)
@@ -154,11 +172,7 @@ class RepeatedAStar:
                 # Get succ(s, a)
                 succ = self.grid.cell_at(x, y)
 
-                # If we reached a blocked cell, increase action cost
-                action_cost = 1 if not succ.blocked() else float("inf")
-                # Color discovered walls orange
-                if succ.blocked():
-                    self.viewer.draw_rect_at_pos(succ.get_x(), succ.get_y(), (246, 159, 124))
+                action_cost = self.action_costs[succ]
 
                 if self._search[succ] < self.counter:
                     self.gscore[succ] = float("inf")
