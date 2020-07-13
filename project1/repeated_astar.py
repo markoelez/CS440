@@ -175,12 +175,19 @@ class RepeatedAStar:
         for k, v in self.tree.items():
             print("KEY: {}, VAL: {}\n".format(k, v))
 
-        self.backtrack(path)
+        curr = self.goal
+        final_path = []
+        while curr and curr != self.og_start:
+            final_path.append(curr)
+            if curr not in self.tree:
+                break
+            curr = self.tree[curr]
+        self.backtrack(final_path)
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
-            time.sleep(0.5)
+            time.sleep(0.2)
             print("Computing path...")
             print(self.open)
             # Remove cell with smallest f-value
