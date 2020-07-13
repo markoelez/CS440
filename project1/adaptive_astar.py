@@ -150,8 +150,7 @@ class AdaptiveAStar:
             for curr in path[::-1]:
                 if curr.blocked():
                     # Reached a wall, try again
-                    print("Agent has reached a wall")
-                    #self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
+
                     # Increase g score to infinity 
                     self.gscore[curr] = float("inf") 
                     # Update action cost
@@ -185,7 +184,6 @@ class AdaptiveAStar:
     def compute_path(self, blocked, explore_color):
         expanded = []
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
-            print("Computing path...")
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
@@ -242,7 +240,6 @@ class AdaptiveAStar:
                     else:
                         self.open.push((fsucc, -self.gscore[succ], succ))
         
-        print("Updating F values...\n")
         # Update h values (and subsequent f values)
         for s in expanded:
             # h(s) = g(s_goal) - g(s)

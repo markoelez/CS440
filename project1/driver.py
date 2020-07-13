@@ -71,6 +71,7 @@ print("Press 1 to run repeated forward A* (tie-break high g) search from startin
 print("Press 2 to run repeated forward A* (tie-break low g) search from starting cell (green) to goal cell (red)\n")
 print("Press 3 to run repeated backward A* (tie-break high g) search from goal cell (red) to start cell (green)\n")
 print("Press 4 to run repeated backward A* (tie-break low g) search from goal cell (red) to start cell (green)\n")
+print("Press 5 to run adaptive A* (tie-break high g) search from goal cell (red) to start cell (green)\n")
 print("Press q or esc tq or esc too quit the program\n")
 print("Listening for input...\n")
 print("="*60)

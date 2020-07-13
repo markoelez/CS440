@@ -150,8 +150,7 @@ class RepeatedAStar:
             for curr in path[::-1]:
                 if curr.blocked():
                     # Reached a wall, try again
-                    print("Agent has reached a wall")
-                    #self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
+
                     # Increase g score to infinity 
                     self.gscore[curr] = float("inf") 
                     # Update action cost
@@ -184,7 +183,6 @@ class RepeatedAStar:
 
     def compute_path(self, blocked, explore_color):
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
-            print("Computing path...")
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
