@@ -182,6 +182,7 @@ class RepeatedAStar:
             if curr not in self.tree:
                 break
             curr = self.tree[curr]
+        final_path.append(curr)
         self.backtrack(final_path)
         print("\nFound path\n")
 
