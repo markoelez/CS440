@@ -123,9 +123,9 @@ class RepeatedAStar:
             
 
             if self.tiebreak == TieBreakVariants.LO_G:
-                self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], time.time(),  self.start))
+                self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], self.start))
             else:
-                self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], time.time(),  self.start))
+                self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], self.start))
 
 
             # Look around
@@ -196,7 +196,7 @@ class RepeatedAStar:
             print("Computing path...")
             print(self.open)
             # Remove cell with smallest f-value
-            s = self.open.pop()[3]
+            s = self.open.pop()[2]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
                 self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), explore_color)
                 pygame.display.flip()
@@ -242,17 +242,17 @@ class RepeatedAStar:
                     print("--" * 10)
                     print("SUCC: ", succ, self.gscore[succ])
                     # Remove from open list 
-                    if succ in [x[3] for x in self.open]:
-                        idx = [x[3] for x in self.open].index(succ)
+                    if succ in [x[2] for x in self.open]:
+                        idx = [x[2] for x in self.open].index(succ)
                         self.open.pop_at(idx)
                     
                     fsucc = self.gscore[succ] + self.h(succ)
                     print("F: {}, H: {}, G: {}\n".format(fsucc, self.h(succ), self.gscore[succ]))
                     
                     if self.tiebreak == TieBreakVariants.LO_G:
-                        self.open.push((fsucc, self.gscore[succ], time.time(), succ))
+                        self.open.push((fsucc, self.gscore[succ], succ))
                     else:
-                        self.open.push((fsucc, -self.gscore[succ], time.time(), succ))
+                        self.open.push((fsucc, -self.gscore[succ], succ))
 
 
 
