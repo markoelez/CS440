@@ -128,6 +128,8 @@ class RepeatedAStar:
 
             self.compute_path(blocked, colors[0])
 
+            print("BREAKPOINT")
+
             if not self.open:
                 print("\nCan't find a path!\n")
                 return  
@@ -136,9 +138,11 @@ class RepeatedAStar:
             curr = self.goal
             path = []
             while curr and curr != self.start:
+                print('CURR: ', curr, self.start)
                 path.append(curr)
-                if curr in self.tree:
-                    curr = self.tree[curr]
+                if curr not in self.tree:
+                    break
+                curr = self.tree[curr]
 
             segment = []
             # Follow path
@@ -166,18 +170,7 @@ class RepeatedAStar:
             #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             self.no_color.add(self.start)
         
-        print("PRINTING TREE")
-        """
-        _path = []
-        #curr = self.goal
-        curr = self.grid.cell_at(3, 4)
-        while curr != self.og_start:
-            print(curr)
-            _path.append(curr)
-            if not curr in self.tree:
-                break
-            curr = self.tree[curr]
-        """
+        print(self.start)
         print("="*40)
         for k, v in self.tree.items():
             print("Parent: {}, Child: {}\n".format(v, k))
@@ -185,6 +178,7 @@ class RepeatedAStar:
 
     def compute_path(self, blocked, explore_color):
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
+            time.sleep(0.5)
             print("Computing path...")
             print(self.open)
             # Remove cell with smallest f-value
@@ -192,11 +186,13 @@ class RepeatedAStar:
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
                 self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), explore_color)
                 pygame.display.flip()
+
             # Check if cell already expanded
             if s in self.closed: continue
 
             # Expand cell
             self.closed.add(s)
+
             # Take all actions a in A(s)
             for (dx, dy) in self.dirs:
                 (x, y) = (s.get_x() + dx, s.get_y() + dy)
@@ -207,7 +203,7 @@ class RepeatedAStar:
                 # Get succ(s, a)
                 succ = self.grid.cell_at(x, y)
 
-                if succ in blocked:
+                if succ in self.closed:
                     continue
 
                 action_cost = self.action_costs[succ]
@@ -218,8 +214,17 @@ class RepeatedAStar:
 
                 if self.gscore[succ] > self.gscore[s] + action_cost:
                     self.gscore[succ] = self.gscore[s] + action_cost
+
+
+                    already_parent = False
+                    for k, v in self.tree.items():
+                        if k == s and v == succ:
+                            already_parent = True
+
                     # Trace
-                    self.tree[succ] = s
+                    if not already_parent:
+                        self.tree[succ] = s
+
                     print("--" * 10)
                     print("SUCC: ", succ, self.gscore[succ])
                     # Remove from open list 
@@ -230,39 +235,4 @@ class RepeatedAStar:
                     fsucc = self.gscore[succ] + self.h(succ)
                     print("F: {}, H: {}, G: {}\n".format(fsucc, self.h(succ), self.gscore[succ]))
                     self.open.push((fsucc, -self.gscore[succ], time.time(), succ))
-                    '''
-                    if self.tiebreak == TieBreakVariants.HI_G:
-                        self.open.push((fsucc, -self.gscore[succ], succ))
-                    else:
-                        self.open.push((fsucc, self.gscore[succ], succ))
-                    '''
-
-
-if __name__ == '__main__':
-
-    grid = load_grid('{}/grid{}.pickle'.format("data", 0))
-
-    viewer = Display(grid)
-
-    start = grid.get_start()
-    goal = grid.get_goal()
-
-    done = False
-    while not done:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_0:
-                    print('Resetting grid...\n')
-                    viewer.reset_grid()
-                    pygame.display.flip()
-                elif event.key == pygame.K_1:
-                    print('Running forwards A* Search\n')
-                    astar = AStar(viewer, start, goal)
-                    astar.search(variant=AStarVariants.FORWARDS)
-                    pygame.display.flip()
-        pygame.display.flip()
-
-
 

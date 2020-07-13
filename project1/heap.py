@@ -28,6 +28,7 @@ class MinHeap:
 
     def remove(self, x):
         self.array.remove(x)
+        heapq.heapify(self.array)
 
     def __getitem__(self, idx):
         return self.array[idx]

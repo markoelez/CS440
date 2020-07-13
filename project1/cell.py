@@ -40,7 +40,7 @@ class Cell:
         return "Cell: ({}, {}) Type: {}".format(self.x, self.y, self.state.value)
     
     def __hash__(self):
-        return hash(str(self.x) + str(self.y) + str(self.x - self.y))
+        return hash(str(self.x) + str(self.y))
 
     def __eq__(self, other):
         return self.get_x() == other.get_x() and self.get_y() == other.get_y()

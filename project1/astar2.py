@@ -168,26 +168,17 @@ class RepeatedAStar:
             blocked = self.look_around(self.start)
             # Draw new starting cell in green
             #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
-            # Connect start with end of this path
-            #self.backtrack(connect)
             self.no_color.add(self.start)
-        print("PRINTING TREE")
-        _path = []
-        curr = self.goal
-        #curr = self.grid.cell_at(3, 4)
-        while curr != self.og_start:
-            print(curr)
-            _path.append(curr)
-            if not curr in self.tree:
-                break
-            curr = self.tree[curr]
-        self.backtrack(_path)
+
+        print(self.start)
+        print("="*40)
+        for k, v in self.tree.items():
+            print("Parent: {}, Child: {}\n".format(v, k))
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
-        print("Computing path...")
-
         while self.open:
+            print("Computing path...")
             time.sleep(0)
             print("EXPANDING : {}".format(self.open.peek()[3]))
 
