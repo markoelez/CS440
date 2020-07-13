@@ -123,7 +123,7 @@ while not done:
                 pygame.display.flip()
             elif event.key == pygame.K_5:
                 print('Running adaptive A*, tie-breaking on high g\n')
-                astar = AdaptiveAStar(display, start, goal)
+                astar = AdaptiveAStar(display, grid, start, goal)
                 a = time.time()
                 astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.LO_G)
                 b = time.time()
