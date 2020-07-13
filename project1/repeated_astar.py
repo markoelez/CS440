@@ -23,10 +23,10 @@ class TieBreakVariants(Enum):
 
 class RepeatedAStar:
 
-    def __init__(self, viewer, start, goal):
+    def __init__(self, viewer, grid, start, goal):
 
         self.viewer = viewer
-        self.grid = viewer.get_grid() 
+        self.grid = grid 
         self.grid_size = self.grid.get_rows()
 
         self.cols = self.grid.get_cols()
@@ -86,8 +86,9 @@ class RepeatedAStar:
     def backtrack(self, path):
         for n in path[::-1][:-1]:
             if n != self.og_start and n != self.goal:
-                self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
-            pygame.display.flip()
+                if self.viewer:
+                    self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
+                    pygame.display.flip()
 
     def look_around(self, start):
         blocked = []
@@ -166,8 +167,6 @@ class RepeatedAStar:
             # Rebase knowledge of adjacent cells
             blocked = self.look_around(self.start)
             
-            # Draw new starting cell in green
-            #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             self.no_color.add(self.start)
         
         curr = self.goal
@@ -186,8 +185,9 @@ class RepeatedAStar:
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
-                self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), explore_color)
-                pygame.display.flip()
+                if self.viewer:
+                    self.viewer.draw_rect_at_pos(s.get_x(), s.get_y(), explore_color)
+                    pygame.display.flip()
 
             # Check if cell already expanded
             if s in self.closed: continue

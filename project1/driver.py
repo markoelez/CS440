@@ -87,7 +87,7 @@ while not done:
                 pygame.display.flip()
             elif event.key == pygame.K_1:
                 print('Running repeated forwards A* Search, tie-breaking on high g\n')
-                astar = RepeatedAStar(display, start, goal)
+                astar = RepeatedAStar(display, grid, start, goal)
                 a = time.time()
                 astar.search(variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.HI_G)
                 b = time.time()
@@ -96,7 +96,7 @@ while not done:
                 pygame.display.flip()
             elif event.key == pygame.K_2:
                 print('Running repeated forwards A* Search, tie-breaking on low g\n')
-                astar = RepeatedAStar(display, start, goal)
+                astar = RepeatedAStar(display, grid, start, goal)
                 a = time.time()
                 astar.search(variant=AStarVariants.FORWARDS, tiebreak=TieBreakVariants.LO_G)
                 b = time.time()
@@ -105,7 +105,7 @@ while not done:
                 pygame.display.flip()
             elif event.key == pygame.K_3:
                 print('Running repeated backwards A* Search, tie-breaking on high g\n')
-                astar = RepeatedAStar(display, start, goal)
+                astar = RepeatedAStar(display, grid, start, goal)
                 a = time.time()
                 astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.HI_G)
                 b = time.time()
@@ -114,7 +114,7 @@ while not done:
                 pygame.display.flip()
             elif event.key == pygame.K_4:
                 print('Running repeated backwards A* Search, tie-breaking on low g\n')
-                astar = RepeatedAStar(display, start, goal)
+                astar = RepeatedAStar(display, grid, start, goal)
                 a = time.time()
                 astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.LO_G)
                 b = time.time()
