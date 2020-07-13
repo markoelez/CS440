@@ -25,6 +25,12 @@ if __name__ == '__main__':
     hi = []
     
     for i, grid in enumerate(world):
+        """
+        if i == 12:
+            lo.append([i, lo[3][1]])
+            hi.append([i, hi[4][1]])
+            continue
+        """
         print("ITERATION: {}".format(i))
         start, goal = grid.get_start(), grid.get_goal()
 
@@ -43,13 +49,17 @@ if __name__ == '__main__':
         hi.append([i, b - a])
 
 
-    # Show graph
-    lo = np.asarray(lo_g, dtype=np.float32)
+    # save 
+
+    np_lo = np.asarray(lo)
+    np_hi = np.asarray(hi)
+
+    np.savetxt("lo.csv", np_lo, delimiter=",")
+    np.savetxt("hi.csv", np_hi, delimiter=",")
     
     x_lo = [v[0] for v in lo]
     y_lo = [v[1] for v in lo]
 
-    hi = np.asarray(hi_g, dtype=np.float32)
 
     x_hi = [v[0] for v in hi]
     y_hi = [v[1] for v in hi]
