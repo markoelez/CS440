@@ -84,9 +84,7 @@ class RepeatedAStar:
         return abs(start.get_x() - self.goal.get_x()) + abs(start.get_y() - self.goal.get_y())
 
     def backtrack(self, path):
-        for x in path:
-            print(x)
-        for n in path[:-1]:
+        for n in path[::-1][:-1]:
             if n != self.og_start and n != self.goal:
                 self.viewer.draw_rect_at_pos(n.get_x(), n.get_y(), YELLOW)
             pygame.display.flip()
@@ -108,6 +106,7 @@ class RepeatedAStar:
         self.tiebreak = tiebreak
         if variant == AStarVariants.BACKWARDS:
             self.start, self.goal = self.goal, self.start
+        self.og_start = self.start
         path = []
         while self.start != self.goal:
             self.counter += 1
@@ -133,8 +132,6 @@ class RepeatedAStar:
 
             self.compute_path(blocked, colors[0])
 
-            print("BREAKPOINT")
-
             if not self.open:
                 print("\nCan't find a path!\n")
                 return  
@@ -143,7 +140,6 @@ class RepeatedAStar:
             curr = self.goal
             path = []
             while curr and curr != self.start:
-                print('CURR: ', curr, self.start)
                 path.append(curr)
                 if curr not in self.tree:
                     break
@@ -154,7 +150,7 @@ class RepeatedAStar:
             for curr in path[::-1]:
                 if curr.blocked():
                     # Reached a wall, try again
-                    print("Reached a wall")
+                    print("Agent has reached a wall")
                     #self.viewer.draw_rect_at_pos(curr.get_x(), curr.get_y(), (246, 159, 124))
                     # Increase g score to infinity 
                     self.gscore[curr] = float("inf") 
@@ -175,11 +171,6 @@ class RepeatedAStar:
             #self.viewer.draw_rect_at_pos(self.start.get_x(), self.start.get_y(), GREEN)
             self.no_color.add(self.start)
         
-        print(self.start)
-        print("="*40)
-        for k, v in self.tree.items():
-            print("KEY: {}, VAL: {}\n".format(k, v))
-
         curr = self.goal
         final_path = []
         while curr and curr != self.og_start:
@@ -194,7 +185,6 @@ class RepeatedAStar:
     def compute_path(self, blocked, explore_color):
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
             print("Computing path...")
-            print(self.open)
             # Remove cell with smallest f-value
             s = self.open.pop()[2]
             if s not in self.no_color and s != self.start and s != self.goal and not s.blocked():
@@ -239,15 +229,12 @@ class RepeatedAStar:
                     if not already_parent:
                         self.tree[succ] = s
 
-                    print("--" * 10)
-                    print("SUCC: ", succ, self.gscore[succ])
                     # Remove from open list 
                     if succ in [x[2] for x in self.open]:
                         idx = [x[2] for x in self.open].index(succ)
                         self.open.pop_at(idx)
                     
                     fsucc = self.gscore[succ] + self.h(succ)
-                    print("F: {}, H: {}, G: {}\n".format(fsucc, self.h(succ), self.gscore[succ]))
                     
                     if self.tiebreak == TieBreakVariants.LO_G:
                         self.open.push((fsucc, self.gscore[succ], succ))
