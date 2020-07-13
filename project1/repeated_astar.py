@@ -173,7 +173,9 @@ class RepeatedAStar:
         print(self.start)
         print("="*40)
         for k, v in self.tree.items():
-            print("Parent: {}, Child: {}\n".format(v, k))
+            print("KEY: {}, VAL: {}\n".format(k, v))
+
+        self.backtrack(path)
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
