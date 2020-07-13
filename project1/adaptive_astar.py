@@ -183,6 +183,7 @@ class AdaptiveAStar:
         print("\nFound path\n")
 
     def compute_path(self, blocked, explore_color):
+        expanded = []
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
             print("Computing path...")
             # Remove cell with smallest f-value
@@ -196,6 +197,7 @@ class AdaptiveAStar:
 
             # Expand cell
             self.closed.add(s)
+            expanded.append(s)
 
             # Take all actions a in A(s)
             for (dx, dy) in self.dirs:
@@ -219,7 +221,6 @@ class AdaptiveAStar:
                 if self.gscore[succ] > self.gscore[s] + action_cost:
                     self.gscore[succ] = self.gscore[s] + action_cost
 
-
                     already_parent = False
                     for k, v in self.tree.items():
                         if k == s and v == succ:
@@ -240,6 +241,20 @@ class AdaptiveAStar:
                         self.open.push((fsucc, self.gscore[succ], succ))
                     else:
                         self.open.push((fsucc, -self.gscore[succ], succ))
+        
+        print("Updating F values...\n")
+        # Update h values (and subsequent f values)
+        for s in expanded:
+            # h(s) = g(s_goal) - g(s)
+            try:
+                self.hscore[s] = self.gscore[self.goal] - self.gscore[s]
+                self.fscore[s] = self.gscore[s] + self.hscore[s]
+            except:
+                continue
+        # Iterate through open list and update f values
+        for item in self.open:
+            if item[0] in self.fscore:
+                self.open.update_f_value(item, self.fscore[item])
 
 
 

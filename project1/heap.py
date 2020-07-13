@@ -40,4 +40,18 @@ class MinHeap:
     def __len__(self):
         return len(self.array)
 
+    def update_f_value(self, item, new_f):
+        for i in self.array:
+            if i[2] == item:
+                i[0] = new_f
+
+        heapq.heapify(self.array)
+
+
+
+
+
+
+
+
 
