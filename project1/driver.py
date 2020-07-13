@@ -4,6 +4,7 @@ import time
 import sys
 from display import Display
 from repeated_astar import RepeatedAStar, AStarVariants, TieBreakVariants
+from adaptive_astar import AdaptiveAStar
 #from astar2 import RepeatedAStar, AStarVariants, TieBreakVariants
 from grid import Grid, load_grid
 from cell import Cell, CellState
@@ -11,7 +12,7 @@ from world import World
 import pygame
 
 
-NUM_GRID_WORLDS = 5#50
+NUM_GRID_WORLDS = 50
 GRID_WORLD_SIZE_W = 101 
 GRID_WORLD_SIZE_H = 101
 """
@@ -25,6 +26,7 @@ GRID_WORLD_DIMENS = (GRID_WORLD_SIZE_W, GRID_WORLD_SIZE_H)
 world = World(size=NUM_GRID_WORLDS, dimens=GRID_WORLD_DIMENS)
 
 # Save world in given directory
+#world.gen_grids()
 #world.save("data")
 world.load("data")
 
@@ -118,8 +120,17 @@ while not done:
                 print("Finished running algorithm. Took {} seconds.\n".format(b - a))
                 print("=" * 60)
                 pygame.display.flip()
+            elif event.key == pygame.K_5:
+                print('Running adaptive A*, tie-breaking on high g\n')
+                astar = AdaptiveAStar(display, start, goal)
+                a = time.time()
+                astar.search(variant=AStarVariants.BACKWARDS, tiebreak=TieBreakVariants.LO_G)
+                b = time.time()
+                print("Finished running algorithm. Took {} seconds.\n".format(b - a))
+                print("=" * 60)
+                pygame.display.flip()
             elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
-                print('Quitting...\n')
+                print('\nQuitting...\n')
                 sys.exit(0)
     pygame.display.flip()
 

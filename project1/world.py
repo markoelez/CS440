@@ -12,8 +12,6 @@ class World:
 
         self.grids = []
 
-        self.gen_grids()
-
     def gen_grids(self):
         """Generate all maze-like grids in world."""
         
@@ -23,14 +21,6 @@ class World:
     def gen_grid(self):
         """Generates a single grid."""
         return Grid(self.w, self.h)
-
-    def print_all(self):
-        """Print all grids in world."""
-        for grid in self.grids:
-            print(grid)
-            print()
-            print('=' * 70)
-            print()
 
     def save(self, base_dir='data'):
         for i, grid in enumerate(self.grids):
