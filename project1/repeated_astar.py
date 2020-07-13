@@ -122,7 +122,7 @@ class RepeatedAStar:
             self.closed = set() 
             
 
-            if self.tiebreak = TieBreakVariants.LO_G:
+            if self.tiebreak == TieBreakVariants.LO_G:
                 self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], time.time(),  self.start))
             else:
                 self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], time.time(),  self.start))
@@ -249,7 +249,7 @@ class RepeatedAStar:
                     fsucc = self.gscore[succ] + self.h(succ)
                     print("F: {}, H: {}, G: {}\n".format(fsucc, self.h(succ), self.gscore[succ]))
                     
-                    if self.tiebreak = TieBreakVariants.LO_G:
+                    if self.tiebreak == TieBreakVariants.LO_G:
                         self.open.push((fsucc, self.gscore[succ], time.time(), succ))
                     else:
                         self.open.push((fsucc, -self.gscore[succ], time.time(), succ))
