@@ -120,8 +120,13 @@ class RepeatedAStar:
 
             self.open = MinHeap()
             self.closed = set() 
+            
 
-            self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], time.time(),  self.start))
+            if self.tiebreak = TieBreakVariants.LO_G:
+                self.open.push((self.gscore[self.start] + self.h(self.start), self.gscore[self.start], time.time(),  self.start))
+            else:
+                self.open.push((self.gscore[self.start] + self.h(self.start), -self.gscore[self.start], time.time(),  self.start))
+
 
             # Look around
             blocked = self.look_around(self.start)
@@ -188,7 +193,6 @@ class RepeatedAStar:
 
     def compute_path(self, blocked, explore_color):
         while self.open and self.open.peek()[0] < self.gscore[self.goal]:
-            time.sleep(0.2)
             print("Computing path...")
             print(self.open)
             # Remove cell with smallest f-value
@@ -244,5 +248,13 @@ class RepeatedAStar:
                     
                     fsucc = self.gscore[succ] + self.h(succ)
                     print("F: {}, H: {}, G: {}\n".format(fsucc, self.h(succ), self.gscore[succ]))
-                    self.open.push((fsucc, -self.gscore[succ], time.time(), succ))
+                    
+                    if self.tiebreak = TieBreakVariants.LO_G:
+                        self.open.push((fsucc, self.gscore[succ], time.time(), succ))
+                    else:
+                        self.open.push((fsucc, -self.gscore[succ], time.time(), succ))
+
+
+
+
 

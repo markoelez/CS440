@@ -12,13 +12,12 @@ import pygame
 
 
 NUM_GRID_WORLDS = 5#50
-"""
-GRID_WORLD_SIZE_W = 10 
-GRID_WORLD_SIZE_H = 10 
+GRID_WORLD_SIZE_W = 101 
+GRID_WORLD_SIZE_H = 101
 """
 GRID_WORLD_SIZE_W = 5 
 GRID_WORLD_SIZE_H = 5 
-
+"""
 GRID_WORLD_DIMENS = (GRID_WORLD_SIZE_W, GRID_WORLD_SIZE_H)
 
 
@@ -36,7 +35,8 @@ if not isinstance(grid_num, int) or grid_num < 0 or grid_num >= NUM_GRID_WORLDS:
     raise ValueError("Provided index is out of range")
 
 # Get grid
-#grid = world[grid_num]
+grid = world[grid_num]
+"""
 grid = Grid(5, 5)
 for r in range(len(grid.maze)):
     for c in range(len(grid.maze[0])):
@@ -54,7 +54,7 @@ grid.maze[4][4].set_state(CellState.END)
 
 grid.start = grid.cell_at(4, 1)
 grid.goal = grid.cell_at(4, 4)
-
+"""
 # Get start and goal positions
 start, goal = grid.get_start(), grid.get_goal()
 
