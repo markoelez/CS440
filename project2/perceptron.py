@@ -18,14 +18,16 @@ def cost_function(y_true, y_pred):
 
 class PerceptronClassifier:
 
-    def __init__(self, input_dim, n_classes, seed=99):
+    def __init__(self, input_shape, n_classes, verbose, seed=99):
         self.seed = seed
         np.random.seed(self.seed)
 
         self.n_class = n_classes
+
+        self.verbose = verbose
         
-        # weights shape: (9, 28, 28)
-        self.weights = np.random.randn(n_classes, input_dim, input_dim)
+        # weights shape: (9, x, y)
+        self.weights = np.random.randn(n_classes, input_shape[1], input_shape[0])
 
     def train(self, X, y, epochs, validation_split=0.2):
         x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=validation_split)
@@ -35,7 +37,8 @@ class PerceptronClassifier:
             
             for x, y in zip(x_train, y_train):
                 pred = self.predict(x)
-                print("Predicted {}. Expected {}. Correct? {}\n".format(pred, y, pred == y))
+                if self.verbose:
+                    print("Predicted {}. Expected {}. Correct? {}\n".format(pred, y, pred == y))
                 if pred != y:
                     # update weights
                     self.weights[y] = self.weights[y] + x 
@@ -48,9 +51,10 @@ class PerceptronClassifier:
                 pred = self.predict(x)
                 if pred == y: correct += 1
 
-            print("=" * 60)
-            print("Finished epoch {} with accuracy {}".format(e, correct/total))
-            print("=" * 60)
+            if self.verbose:
+                print("=" * 60)
+                print("Finished epoch {} with accuracy {}".format(e, correct/total))
+                print("=" * 60)
 
     def evaluate(self, X, Y):
         correct  = 0
@@ -75,7 +79,7 @@ if __name__ == "__main__":
     d.load_data("data/digitdata/trainingimages")
     d.load_labels("data/digitdata/traininglabels")
 
-    model = PerceptronClassifier(d.shape()[1], 10)
+    model = PerceptronClassifier(d.shape()[1], True, 10)
 
     model.train(d.get_data(), d.get_labels(), 2, 0.1)
 
