@@ -4,22 +4,6 @@ import os
 import numpy as np
 
 
-class Data:
-    """Represents a single piece of data."""
-    def __init__(self, data, width, height):
-        self.w, self.h = width, height
-
-        self.pixels = np.array(data)
-
-    def get_pixel(self, r, c):
-        return self.pixels[r][c]
-
-    def __str__(self):
-        rows = []
-        for r in self.pixels:
-            rows.append("".join(list(map(int_to_ascii, r))))
-        return "\n".join(rows)
-
 def ascii_to_int(c):
     if c == ' ':
         return 0
@@ -56,7 +40,8 @@ class Dataset:
                 # eof
                 print("Finished reading {} objects.".format(n))
                 break
-            self.data.append(Data(data, self.width, self.height))
+            self.data.append(np.array(data))
+        self.data = np.array(self.data)
         return self.data
 
     def load_labels(self, filename):
@@ -65,6 +50,7 @@ class Dataset:
         for l in fin[:min(self.size, len(fin))]:
             if l == '': break
             self.labels.append(int(l))
+        self.labels = np.array(self.labels)
         return self.labels
 
     def read(self, filename):
@@ -83,6 +69,12 @@ class Dataset:
     def __getitem__(self, idx):
         """Returns a tuple with data object and corresponding label"""
         return (self.data[idx], self.labels[idx])
+
+    def __len__(self):
+        return len(self.data)
+
+    def shape(self):
+        return (self.width, self.height)
 
 if __name__ == "__main__":
     
